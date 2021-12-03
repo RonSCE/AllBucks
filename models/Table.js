@@ -13,10 +13,10 @@ const TableSchema = new mongoose.Schema(
         },
         isAvailable: {
             type: Boolean,
-            default:false
+            default:true
         },
-        location:{
-            isInside:Boolean,
+        isInside:{
+            type:Boolean,
             default:true
         },
     },

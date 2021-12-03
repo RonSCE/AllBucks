@@ -6,6 +6,7 @@ const express = require('express')
 const https = require('https');
 const authRoute =require('./routes/auth')
 const prodRoute =require('./routes/product')
+const tableRoute = require('./routes/table')
 const mongoose = require('mongoose')
 const app = express();
 const server = https.createServer({key: key, cert: cert }, app);
@@ -19,6 +20,7 @@ app.use(cors({
 }));
 app.use("/api/auth", authRoute)
 app.use("/api/product", prodRoute)
+app.use("/api/table", tableRoute)
 app.use(errorMiddleware);
 async function runServer(){
     try {
@@ -32,5 +34,4 @@ async function runServer(){
         console.log(e)
     }
 }
-//inverse binary tree
 runServer();

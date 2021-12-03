@@ -1,15 +1,8 @@
 const productService = require('../service/product-service');
-const {validationResult} = require('express-validator');
 const ApiError = require('../exceptions/api-error');
 
 
 class ProductController {
-    static checkForValidationErrors(req){
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            throw (ApiError.BadRequest('Validation Error', errors.array()))
-        }
-    }
     static checkUserType(req){
         const {type} = req.user;
         if(type !== "Admin") {
@@ -19,7 +12,6 @@ class ProductController {
     async addProduct(req, res, next) {
         try {
             ProductController.checkUserType(req)
-            ProductController.checkForValidationErrors(req)
             const {productName,category,price,imgUrl,inStock,salePrice} = req.body;
             const product = await productService.addProduct(productName,category,price,imgUrl,inStock,salePrice)
             res.json({product})
@@ -31,7 +23,6 @@ class ProductController {
     async editProduct(req, res, next) {
         try {
             ProductController.checkUserType(req)
-            ProductController.checkForValidationErrors(req)
             const productName = req.params.name
             const {newProductName,category,price,imgUrl,inStock,salePrice} = req.body
             const product = await productService.editProduct(productName,newProductName,
@@ -66,7 +57,7 @@ class ProductController {
             ProductController.checkUserType(req)
             const productName = req.params.name;
             await productService.deleteProduct(productName)
-            res.json({resultCode: 0})
+            res.json({result: "Success"})
         } catch (err) {
             next(err);
         }
