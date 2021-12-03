@@ -50,8 +50,13 @@ class ProductService {
     }
 
     async getOneProduct(productName) {
-        const product = await Product.findOne({productName})
-        return ProductDto.productToDto(product)
+        try {
+            const product = await Product.findOne({productName})
+            return ProductDto.productToDto(product)
+        }
+        catch (e) {
+            throw ApiError.BadRequest(`Product '${productName}'does not exists`)
+        }
     }
 
     async deleteProduct(productName) {

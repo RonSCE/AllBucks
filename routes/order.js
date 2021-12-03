@@ -3,11 +3,10 @@ const orderController = require('../controller/order-controller')
 
 // router.get("/", auth, orderController.getMyOrders) // -> TODO:?
 router.post("/create", orderController.create)
-router.get("/order/:id", orderController.getOrder)
-router.patch("/edit-order/:id", orderController.editOrder)
-router.delete("/cancel-order/:id",orderController.cancelOrder)
-router.post("/add-product/:orderId", orderController.addProduct)
-router.delete("/delete-product/:orderId&:productName", orderController.deleteProduct)
+router.get("/:id", orderController.getOrder)
+router.patch("/edit-status/:id", orderController.editStatus)
+router.patch("/cancel-order/:id",orderController.cancelOrder)
+router.put("/edit/:id", orderController.edit)
 
 
 module.exports = router

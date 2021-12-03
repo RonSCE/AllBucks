@@ -6,6 +6,7 @@ const express = require('express')
 const https = require('https');
 const authRoute =require('./routes/auth')
 const prodRoute =require('./routes/product')
+const orderRoute = require('./routes/order')
 const tableRoute = require('./routes/table')
 const mongoose = require('mongoose')
 const app = express();
@@ -21,6 +22,7 @@ app.use(cors({
 app.use("/api/auth", authRoute)
 app.use("/api/product", prodRoute)
 app.use("/api/table", tableRoute)
+app.use("/api/order", orderRoute)
 app.use(errorMiddleware);
 async function runServer(){
     try {
