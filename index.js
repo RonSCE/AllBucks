@@ -5,6 +5,7 @@ const errorMiddleware = require('./middleware/errormw');
 const express = require('express')
 const https = require('https');
 const authRoute =require('./routes/auth')
+const prodRoute =require('./routes/product')
 const mongoose = require('mongoose')
 const app = express();
 const server = https.createServer({key: key, cert: cert }, app);
@@ -17,6 +18,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }));
 app.use("/api/auth", authRoute)
+app.use("/api/product", prodRoute)
 app.use(errorMiddleware);
 async function runServer(){
     try {
