@@ -10,6 +10,13 @@ router.post("/register",
     body('name').isLength({min: 1}),
     authController.register
 );
+router.post("/staff-register",auth,
+    body('cid').isLength({min: 3, max: 9}),
+    body('password').isLength({min: 5, max: 32}),
+    body('name').isLength({min: 1}),
+    body('type').isLength({min: 1}),
+    authController.staffRegister
+);
 router.post("/login", authController.login);
 router.get("/me",auth,authController.me);
 
