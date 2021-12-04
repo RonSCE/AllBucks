@@ -7,6 +7,7 @@ const tableController = require('../controller/table-controller')
 
 router.post("/add", auth, tableController.add)
 router.post("/reserve/:tableNum",tableController.reserve)
+router.post("/release/:tableNum",tableController.release)
 router.get("/", tableController.getAll)
 router.get("/:tableNum", tableController.getOne)
 router.put("/edit/:tableNum", auth, tableController.edit)

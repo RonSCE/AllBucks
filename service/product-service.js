@@ -3,15 +3,15 @@ const ApiError = require('../exceptions/api-error')
 const ProductDto = require('../dto/product-dto')
 
 class ProductService {
-    async addProduct(productName,category,price,imgUrl,inStock,salePrice) {
+    async addProduct(productName,category,price,imgUrl,inStock,salePrice,isSpecial) {
         const existsProduct = await Product.findOne({productName})
         if(existsProduct){
             throw ApiError.BadRequest(`Product with name ${productName} Already Exists`)
         }
-        const product = await Product.create({productName,category,price,imgUrl,inStock,salePrice})
+        const product = await Product.create({productName,category,price,imgUrl,inStock,salePrice,isSpecial})
         return ProductDto.productToDto(product)
     }
-    async editProduct(productName,newProductName,category,price,imgUrl,inStock,salePrice) {
+    async editProduct(productName,newProductName,category,price,imgUrl,inStock,salePrice,isSpecial) {
         const product = await Product.findOne({productName})
         if (!product) {
             throw ApiError.BadRequest("Product not exists")
@@ -39,6 +39,9 @@ class ProductService {
         }
         if(typeof inStock === "boolean"){
             product.inStock = inStock
+        }
+        if(typeof isSpecial === "boolean"){
+            product.isSpecial = isSpecial
         }
         await product.save()
         return ProductDto.productToDto(product)

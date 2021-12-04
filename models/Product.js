@@ -22,6 +22,10 @@ const ProductSchema = new mongoose.Schema(
             type:Boolean,
             default:false
         },
+        isSpecial:{
+            type:Boolean,
+            default:false
+        },
         salePrice:{
             type: Number,
             default: null

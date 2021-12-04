@@ -22,6 +22,17 @@ class TableService {
         table.isAvailable = false;
         await table.save()
     }
+    async release(tableNum){
+        const table = await Table.findOne({tableNum})
+        if (!table) {
+            throw ApiError.BadRequest("Table is not exists")
+        }
+        if(table.isAvailable){
+            throw ApiError.BadRequest("Table is already free")
+        }
+        table.isAvailable = true;
+        await table.save()
+    }
     async edit(tableNum,capacity,isAvailable,isInside) {
         const table = await Table.findOne({tableNum})
         if (!table) {
@@ -42,12 +53,12 @@ class TableService {
 
     async getAll() {
         const tables = await Table.find({})
-        return tables.map(table => tableToDto.productToDto(table))
+        return tables.map(table => TableDto.tableToDto(table))
     }
 
     async getOne(tableNum) {
         const table = await Table.findOne({tableNum})
-        return TableDto.productToDto(table)
+        return TableDto.tableToDto(table)
     }
 
     async delete(tableNum) {
