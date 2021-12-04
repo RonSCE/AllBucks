@@ -18,6 +18,9 @@ const ProductSchema = new mongoose.Schema(
         imgUrl:{
             type:String
         },
+        desc:{
+            type:String
+        },
         inStock:{
             type:Boolean,
             default:false

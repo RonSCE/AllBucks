@@ -28,7 +28,7 @@ class AuthService {
 
     async register(cid, password, name) {
         const encryptedPassword = await this.registerBody(cid,password);
-        const newUser = new User(
+        const newUser = await new User(
             {
                 name,
                 cid,
@@ -40,7 +40,7 @@ class AuthService {
     }
     async registerStaff(cid, password, name,type) {
         const encryptedPassword = await this.registerBody(cid,password);
-        const newUser = new User(
+        const newUser = await new User(
             {
                 name,
                 cid,

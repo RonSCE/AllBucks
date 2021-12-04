@@ -28,6 +28,10 @@ class OrderService {
         const order = await Order.findOne({_id: orderId})
         return OrderDto.orderToDto(order)
     }
+    async getActiveOrders() {
+        const orders = await Order.find({status:"In-Progress"})
+        return orders.map(or =>OrderDto.orderToDto(or))
+    }
     async editOrder(orderId,orderedItems) {
         let currItem
         for (const item of orderedItems) {

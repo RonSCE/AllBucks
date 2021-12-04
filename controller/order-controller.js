@@ -1,5 +1,5 @@
 const orderService = require('../service/order-service');
-
+const ApiError = require('../exceptions/api-error');
 
 
 class OrdersController {
@@ -16,6 +16,18 @@ class OrdersController {
         try {
             const orderId = req.params.id;
             const order = await orderService.getOrder(orderId)
+            res.json({order})
+        } catch (err) {
+            next(err);
+        }
+    }
+    async getActiveOrders(req, res, next) {
+        try {
+            const {type} = req.user;
+            if(type!=="Admin" && type!=="Barista"){
+                next(ApiError.UnauthorizedError("Access Denied"))
+            }
+            const order = await orderService.getActiveOrders()
             res.json({order})
         } catch (err) {
             next(err);

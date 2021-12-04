@@ -12,9 +12,9 @@ class ProductController {
     async addProduct(req, res, next) {
         try {
             ProductController.checkUserType(req)
-            const {productName,category,price,inStock,salePrice,isSpecial} = req.body;
+            const {productName,category,price,inStock,salePrice,isSpecial,desc} = req.body;
             const imgUrl = req.file.filename;
-            const product = await productService.addProduct(productName,category,price,imgUrl,inStock,salePrice,isSpecial)
+            const product = await productService.addProduct(productName,category,price,imgUrl,inStock,salePrice,isSpecial,desc)
             res.json({product})
         } catch (err) {
             next(err)
@@ -25,10 +25,10 @@ class ProductController {
         try {
             ProductController.checkUserType(req)
             const productName = req.params.name
-            const {newProductName,category,price,inStock,salePrice,isSpecial} = req.body
+            const {newProductName,category,price,inStock,salePrice,isSpecial,desc} = req.body
             const imgUrl = req.file.filename;
             const product = await productService.editProduct(productName,newProductName,
-                category,price,imgUrl,inStock,salePrice,isSpecial)
+                category,price,imgUrl,inStock,salePrice,isSpecial,desc)
             res.json({product})
         } catch (err) {
             next(err)
