@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 const app = express();
 const server = https.createServer({key: key, cert: cert }, app);
 require('dotenv').config()
-const PORT = 3000
+const PORT = 5000
 const cors = require('cors')
 app.use(express.json())
 app.use(cors({

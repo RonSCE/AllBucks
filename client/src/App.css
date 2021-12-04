@@ -1,0 +1,85 @@
+@import '~antd/dist/antd.css';
+.h100 {
+  min-height: calc(100vh - 64px);
+}
+
+.content {
+  min-width: 640px;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  aspect-ratio: auto;
+}
+
+.minResolution {
+  min-height: calc(100vh - 128px);
+  min-width: 900px;
+  margin: auto;
+}
+
+.maxWidth {
+  max-width: 1200px;
+}
+
+.calendar {
+  width: 300px;
+  border: 1px solid #f0f0f0;
+  border-radius: 2px;
+}
+
+.tag:hover {
+  border: 1px solid darkgrey;
+  cursor: pointer;
+}
+
+.status {
+  padding: 3px;
+}
+
+.status:hover {
+  cursor: pointer;
+  background-color: #e5e1e1;
+
+  border-radius: 5px;
+}
+
+.task-row {
+  background-color: #eaeaea;
+}
+
+.remove-btn {
+  color: crimson;
+}
+
+.remove-btn:hover {
+  color: #d67b33;
+}
+
+.w100 {
+  width: 100%;
+}
+.profile-data{
+  order:1;
+  width: 60%;
+  margin-right: 10%;
+}
+.profile-action {
+  order:2;
+}
+
+.profile-block-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
+
+.profile-block {
+  display: flex;
+  flex-direction: column;
+}
+.profile-card{
+  width:600px;
+}
