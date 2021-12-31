@@ -3,6 +3,8 @@ import thunk, {ThunkAction} from "redux-thunk";
 import authReducer from "./reducers/auth-reducer";
 import appReducer from "./reducers/app-reducer";
 import orderReducer from "./reducers/order-reducer";
+import productReducer from "./reducers/product-reducer";
+import tableReducer from "./reducers/table-reducer";
 
 
 
@@ -10,6 +12,8 @@ let rootReducer = combineReducers({
     auth:authReducer,
     app:appReducer,
     order:orderReducer,
+    product:productReducer,
+    table:tableReducer,
 })
 
 type RootReducerType = typeof rootReducer;
