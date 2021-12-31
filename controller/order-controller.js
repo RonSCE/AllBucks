@@ -27,8 +27,8 @@ class OrdersController {
             if(type!=="Admin" && type!=="Barista"){
                 next(ApiError.UnauthorizedError("Access Denied"))
             }
-            const order = await orderService.getActiveOrders()
-            res.json({order})
+            const orders = await orderService.getActiveOrders()
+            res.json({orders})
         } catch (err) {
             next(err);
         }

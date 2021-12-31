@@ -18,12 +18,11 @@ const authReducer = (state: InitialStateType = initialState, action: ActionsType
     switch (action.type) {
         case AuthActions.SET_USER_DATA:
         case AuthActions.SET_AUTH_ERROR:
+        case AuthActions.LOGOUT:
             return {
                 ...state,
                 ...action.payload
             }
-        case AuthActions.LOGOUT:
-            return {...state, ...action.payload}
         default:
             return state;
     }

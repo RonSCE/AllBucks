@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {IUser} from "../types/types";
+import {IOrder, IProduct, ITable, IUser} from "../types/types";
 
 export const API_URL = `https://localhost:5000/api`
 
@@ -15,6 +15,27 @@ $api.interceptors.request.use(async (config) => {
 export interface Response{
     message?:string
     errors?: any[]
+}
+export interface TableResponse extends Response{
+    table: ITable
+}
+export interface TablesResponse extends Response{
+    tables: ITable[]
+}
+export interface ProductsResponse extends Response{
+    products: IProduct[]
+}
+export interface ProductResponse extends Response{
+    product: IProduct
+}
+export interface OrderResponse extends Response{
+    order: IOrder
+}
+export interface OrdersResponse extends Response{
+    orders: IOrder[]
+}
+export interface ActionResponse extends Response{
+    result: "Success"
 }
 export interface AuthResponse extends Response{
     accessToken?: string
