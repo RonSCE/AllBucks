@@ -7,6 +7,11 @@ export interface IUser {
 export interface UserType{
     type: "Member" | "Barista" | "Admin"
 }
+export enum userTypes{
+    Member="Member" ,
+    Barista= "Barista",
+    Admin="Admin",
+}
 export interface IOrderedProduct{
     productName: string | null
     quantity: number | null

@@ -3,6 +3,7 @@ import Login from "../components/Auth/Login";
 import Register from "../components/Auth/Register";
 import Test from "../components/Test";
 import StaffRegister from "../components/Auth/StaffRegister";
+import ProductManagement from "../components/AdminManagement/ProductManagement/ProductManagement";
 
 
 export interface IRoute {
@@ -15,7 +16,9 @@ export enum RouteNames {
     LOGIN = '/login',
     REGISTER = '/register',
     HOME = '/home',
-    STAFFREG = '/staffregister'
+    STAFFREG = '/staffregister',
+    PRODUCT_MANAGMENT= '/product-management'
+
 }
 
 export const publicRoutes: IRoute[] = [
@@ -29,6 +32,7 @@ export const memberRoutes: IRoute[] = [
 export const adminRoutes: IRoute[] = [
     {path: RouteNames.HOME, exact: true, component: Test},
     {path: RouteNames.STAFFREG, exact: true, component: StaffRegister},
+    {path: RouteNames.PRODUCT_MANAGMENT, exact: true, component: ProductManagement},
 ]
 export const baristaRoutes: IRoute[] = [
     {path: RouteNames.HOME, exact: true, component: Test},

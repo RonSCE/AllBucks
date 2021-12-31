@@ -26,7 +26,11 @@ class ProductController {
             ProductController.checkUserType(req)
             const productName = req.params.name
             const {newProductName,category,price,inStock,salePrice,isSpecial,desc} = req.body
-            const imgUrl = req.file.filename;
+
+            let imgUrl = undefined
+            if(req.file) {
+                imgUrl = req.file.filename;
+            }
             const product = await productService.editProduct(productName,newProductName,
                 category,price,imgUrl,inStock,salePrice,isSpecial,desc)
             res.json({product})

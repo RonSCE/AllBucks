@@ -66,7 +66,7 @@ export const addProduct = (product: IProduct,img: File): ThunkType => async (dis
 }
 
 
-export const editProduct = (productName:string,product:IProduct,img:File): ThunkType => async (dispatch) => {
+export const editProduct = (productName:string,product:IProduct,img:File | null): ThunkType => async (dispatch) => {
     try {
         dispatch(productActions.setLoading(true))
         let data = await  ProductService.editProduct(productName,product,img)

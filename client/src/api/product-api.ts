@@ -5,7 +5,7 @@ export default class ProductService {
         return $api.post<ProductResponse>('/product/add', {file:img,...product}).then(res => res.data)
     }
     //TODO:UPLOAD PIC FROM FRONTEND
-    static async editProduct(productName:string,product:IProduct,img:File){
+    static async editProduct(productName:string,product:IProduct,img:File|null){
         return $api.put<ProductResponse>(`/product/edit/${productName}`, {file:img,...product}).then(res => res.data)
     }
     static async getAllProducts(){
