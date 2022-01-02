@@ -4,8 +4,7 @@
 }
 
 .content {
-  min-width: 640px;
-  width: 100%;
+  width: 100vw;
   height: 100%;
   margin: auto;
   aspect-ratio: auto;
@@ -18,7 +17,9 @@
 }
 
 .maxWidth {
-  max-width: 1200px;
+
+  min-height: 100vh;
+  min-width: 100vw;
 }
 
 .calendar {
@@ -82,4 +83,21 @@
 }
 .profile-card{
   width:600px;
+}
+.item-list{
+
+  display: flex;
+  flex-wrap: wrap;
+
+}
+.edit-item{
+  margin-left: 20px;
+}
+.item{
+  width: 350px;
+  padding: 5px;
+  display: inline-block;
+  border :2px solid grey ;
+  margin: 10px 5px 5px 10px;
+  flex-grow: 1;
 }

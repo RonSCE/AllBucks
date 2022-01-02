@@ -12,6 +12,7 @@ const ProductManagement:FC = () => {
     const allProducts = useSelector<AppStateType>(state=>state.product.products) as IProduct[]
     useEffect(()=>{
         dispatch(getAllProducts())
+        setProducts(allProducts)
     },[])
     const [selected,setSelected] = useState("All")
     const [visible,setVisible]= useState(false)
@@ -36,20 +37,20 @@ const ProductManagement:FC = () => {
     },[selected])
 
     return (
-        <div style={{flexDirection:"row",display:"flex",width:"500"}}>
+        <>
             <MyMenu setSelected={setSelected} selected={selected} products={allProducts}/>
             { products &&
             <List
-                className="ItemList"
+                className="item-list"
                 loading={isLoading}
                 dataSource={products}
                 renderItem={prod => (
-                    <List.Item
-                        actions={[<a onClick={()=>{onEdit(prod)}}>Edit</a>]}
+                    <List.Item className={"item"}
+                        actions={[<a className={"edit-item"} onClick={()=>{onEdit(prod)}}>Edit</a>]}
                     >
                         <Skeleton avatar title={false} loading={isLoading} active>
                             <List.Item.Meta
-                                avatar={<Avatar src={prod.imgUrl} size={"large"}/>}
+                                avatar={<Avatar src={prod.imgUrl} size={"large"} shape={"square"}/>}
                                 title={<h5>{prod.productName}</h5>}
                                 description={
                                 <div>
@@ -65,11 +66,11 @@ const ProductManagement:FC = () => {
                             />
 
                         </Skeleton>
-                        {product&& <EditProduct visible={visible} setVisible={setVisible} onOk={onOk} isLoading={isLoading} product={product} />}
+                        {product&& <EditProduct visible={visible} setVisible={setVisible} onOk={onOk} isLoading={isLoading} product={prod} />}
                     </List.Item>
                 )}
             />
-        }</div>
+        }</>
     );
 };
 

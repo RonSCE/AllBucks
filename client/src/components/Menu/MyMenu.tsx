@@ -12,8 +12,10 @@ interface MenuProps{
 const MyMenu:FC<MenuProps> = ({products,selected,setSelected}) => {
     let categories = products? Array.from(new Set(products.map(p=>p.category))):[]
     return (
-        <div style={{ width: 256 }}>
+        <div style={{ width: 180 ,float:"left"}}>
+            <h2><b>Products:</b></h2>
             <Menu
+                style={{position:"fixed",width: 180}}
                 defaultSelectedKeys={[selected]}
                 mode="inline"
                 theme="dark"

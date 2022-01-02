@@ -18,10 +18,19 @@ const EditProduct:FC<editProps> = ({visible,setVisible,onOk,isLoading,product}) 
     const prodName = product?.productName || ''
     const [isSpecial,setSpecial] = useState( false)
     const [inStock,setStock] = useState(false)
+    const [category,setCategory] = useState( "")
+    const [productName,setProductName] = useState("")
+    const [price,setPrice] = useState("")
+    const [salePrice,setSalePrice] = useState("")
+    const [desc,setDesc] = useState("")
     useEffect(()=>{
         setSpecial(product.isSpecial || false)
         setStock(product.inStock || false)
     },)
+    const save = ()=> {
+        onOk(prodName,product,file)
+
+    }
     return (
         <>
             <Modal

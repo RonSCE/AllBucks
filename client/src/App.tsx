@@ -21,7 +21,7 @@ const App: React.FC = () => {
                 <Spin spinning={isLoading}>
                     <Navbar/>
                     {isLoading ?
-                        <Row justify="center" align="middle" style={{height: "100vh"}}>
+                        <Row justify="center" align="middle" style={{height: "100vh",width:"100hv"}}>
                             <Card>
                                 <Typography.Title style={{textAlign: "center"}}>App is Loading ...</Typography.Title>
                             </Card>
