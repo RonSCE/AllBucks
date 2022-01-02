@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../../redux/Store";
 import {IProduct} from "../../../types/types";
 import EditProduct from "./EditProduct/EditProduct";
+import MyMenu from "../../Menu/MyMenu";
 
 const ProductManagement:FC = () => {
     const dispatch = useDispatch()
@@ -12,7 +13,9 @@ const ProductManagement:FC = () => {
     useEffect(()=>{
         dispatch(getAllProducts())
     },[])
+    const [selected,setSelected] = useState("All")
     const [visible,setVisible]= useState(false)
+    const [products,setProducts] = useState(allProducts || [] as IProduct[])
     const isLoading = useSelector<AppStateType>(state=>state.product.isLoading)  as boolean
     const onOk =async (productName:string,product: IProduct| null,img:File | null) => {
         await dispatch(editProduct(productName,product as IProduct,img))
@@ -24,12 +27,22 @@ const ProductManagement:FC = () => {
         setVisible(true)
     }
     const [product,setProduct]= useState<IProduct|null>(null)
+    useEffect(()=>{
+        if(allProducts && selected!=="All" ){
+            setProducts(allProducts.filter(p=> p.category === selected))
+        }else if(allProducts){
+            setProducts(allProducts)
+        }
+    },[selected])
+
     return (
-        <>{ allProducts &&
+        <div style={{flexDirection:"row",display:"flex",width:"500"}}>
+            <MyMenu setSelected={setSelected} selected={selected} products={allProducts}/>
+            { products &&
             <List
                 className="ItemList"
                 loading={isLoading}
-                dataSource={allProducts}
+                dataSource={products}
                 renderItem={prod => (
                     <List.Item
                         actions={[<a onClick={()=>{onEdit(prod)}}>Edit</a>]}
@@ -56,7 +69,7 @@ const ProductManagement:FC = () => {
                     </List.Item>
                 )}
             />
-        }</>
+        }</div>
     );
 };
 
