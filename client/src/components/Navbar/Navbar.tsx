@@ -3,12 +3,12 @@ import {Link} from 'react-router-dom'
 import {IUser, userTypes} from '../../types/types';
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from '../../redux/Store';
-import {Layout, Menu} from "antd";
+import {Badge, Layout, Menu} from "antd";
 import {
     CaretDownOutlined,
     LoginOutlined,
     LogoutOutlined,
-    QuestionOutlined, ShopOutlined,
+    QuestionOutlined, ShopOutlined, ShoppingCartOutlined,
     UserAddOutlined, UsergroupAddOutlined,
     UserOutlined
 } from "@ant-design/icons";
@@ -30,6 +30,10 @@ const Navbar: React.FC = () => {
         <Layout.Header className={"header minWidth"}>
             {isAuth && user.type===userTypes.Admin ?
                 <Menu theme="dark" mode="horizontal">
+                    <Menu.Item key="cart"><Link to="">
+                        <ShoppingCartOutlined/> <Badge count={ 25 } />
+
+                    </Link></Menu.Item>
                     <SubMenu key="sub-menu-user" icon={<UserOutlined/>}
                              title={<>{user?.name || 'unknown'  } <CaretDownOutlined/></>}>
                         <Menu.Item key="logout" onClick={onLogout} icon={<LogoutOutlined/>}> Logout</Menu.Item>
@@ -40,6 +44,7 @@ const Navbar: React.FC = () => {
                 </Menu>
                 :
                 <Menu theme="dark" mode="horizontal">
+
                     <Menu.Item key="login"><Link to="/login"><LoginOutlined/> Login</Link></Menu.Item>
                     <Menu.Item key="register"> <Link to="/register"><UserAddOutlined/> Register</Link></Menu.Item>
                 </Menu>

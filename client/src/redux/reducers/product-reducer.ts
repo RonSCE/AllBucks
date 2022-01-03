@@ -51,11 +51,13 @@ export const productActions = {
 
 
 
-export const addProduct = (product: IProduct,img: File): ThunkType => async (dispatch) => {
+export const addProduct = (product: IProduct,img: File | null): ThunkType => async (dispatch) => {
     try {
         dispatch(productActions.setLoading(true))
         let data = await  ProductService.addProduct(product,img)
+        let data2 = await ProductService.getAllProducts()
         dispatch(productActions.setProductData(data.product))
+        dispatch(productActions.setProductsData(data2.products))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown product error'
         dispatch(productActions.setError(msg))
@@ -66,11 +68,13 @@ export const addProduct = (product: IProduct,img: File): ThunkType => async (dis
 }
 
 
-export const editProduct = (productName:string,product:IProduct,img:File | null): ThunkType => async (dispatch) => {
+export const editProduct = (product:IProduct,img:File | null): ThunkType => async (dispatch) => {
     try {
         dispatch(productActions.setLoading(true))
-        let data = await  ProductService.editProduct(productName,product,img)
+        let data = await  ProductService.editProduct(product,img)
+        let data2 = await ProductService.getAllProducts()
         dispatch(productActions.setProductData(data.product))
+        dispatch(productActions.setProductsData(data2.products))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown product error'
         dispatch(productActions.setError(msg))
@@ -110,6 +114,8 @@ export const deleteProduct = (productName:string): ThunkType => async (dispatch)
     try {
         dispatch(productActions.setLoading(true))
         await  ProductService.deleteProduct(productName)
+        let data = await ProductService.getAllProducts()
+        dispatch(productActions.setProductsData(data.products))
         dispatch(productActions.setProductData(null))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown product error'

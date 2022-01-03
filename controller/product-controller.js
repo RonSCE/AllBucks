@@ -13,7 +13,10 @@ class ProductController {
         try {
             ProductController.checkUserType(req)
             const {productName,category,price,inStock,salePrice,isSpecial,desc} = req.body;
-            const imgUrl = req.file.filename;
+
+            let imgUrl = "";
+            if(req.file)
+                imgUrl= req.file.filename;
             const product = await productService.addProduct(productName,category,price,imgUrl,inStock,salePrice,isSpecial,desc)
             res.json({product})
         } catch (err) {

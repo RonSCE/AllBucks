@@ -85,19 +85,26 @@
   width:600px;
 }
 .item-list{
-
+  margin-left: 100px;
   display: flex;
   flex-wrap: wrap;
 
 }
 .edit-item{
-  margin-left: 20px;
+  cursor: pointer;
+  margin-left: 5px;
+  margin-top: 5px;
 }
 .item{
-  width: 350px;
+  width: 380px;
   padding: 5px;
   display: inline-block;
   border :2px solid grey ;
   margin: 10px 5px 5px 10px;
   flex-grow: 1;
+}
+.add-prod-bnt{
+position: fixed;
+  top: 70%;
+  left:80%;
 }
