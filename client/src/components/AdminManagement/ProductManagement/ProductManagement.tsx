@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Avatar, Button, List, Popconfirm, Skeleton} from "antd";
+import {Avatar, Button, List, Popconfirm, Popover, Skeleton} from "antd";
 import {addProduct, deleteProduct, editProduct, getAllProducts} from "../../../redux/reducers/product-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../../redux/Store";
@@ -67,14 +67,17 @@ const ProductManagement:FC = () => {
                                 avatar={<Avatar src={prod.imgUrl} size={160} shape={"square"}/>}
                                 title={<b>{prod.productName}</b>}
                                 description={
-                                <div>
-                                    {prod.desc}
-                                <br/>
-                                <div><b>Category:</b>{prod.category}</div>
-                                    <div><b>Is In stock:</b>{prod.inStock? "Yes": "No"}</div>
-                                    <div><b>Regular price:</b>{prod.price}NIS</div>
-                                    <div><b>Sale Price:</b>{prod.salePrice || 'None' }</div>
-                                    <div><b>Is special:</b>{prod.isSpecial? "Yes" : 'No'}</div>
+                                    <div>
+                                        <Popover content={<p>{prod.desc}</p>} title="Description" >
+                                            <b>Description - Hover To See</b>
+                                        </Popover>
+
+                                        <br/>
+                                        <div><b>Category:</b>{prod.category}</div>
+                                        <div><b>Is In stock:</b>{prod.inStock ? "Yes": "No"}</div>
+                                        <div><b>Regular price:</b>{prod.price}NIS</div>
+                                        <div><b>Sale Price:</b>{prod.salePrice || 'None' }</div>
+                                        <div><b>Is special:</b>{prod.isSpecial ? "Yes" : 'No'}</div>
                                     </div>
                                 }
                             />

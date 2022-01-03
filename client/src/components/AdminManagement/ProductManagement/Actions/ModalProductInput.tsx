@@ -99,7 +99,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
             <br/><b>Sale Price</b><br/><InputNumber value={salePrice } min={1} max={1000} onChange={(e)=>{setSalePrice(e)  }} />
             <br/><b>Is In Stock:</b><Switch checked={inStock} onChange={(e)=>{setStock(e)}} />
             <br/><b>Is Special:</b><Switch checked={isSpecial} onChange={(e)=>{setSpecial(e)}} />
-            <br/><b>Description</b><TextArea value={desc} maxLength={100} onChange={(e)=>{setDesc(e.target.value) }} />
+            <br/><b>Description</b><TextArea value={desc} maxLength={200} onChange={(e)=>{setDesc(e.target.value) }} />
        </Modal>);
 };
 
