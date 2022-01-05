@@ -55,7 +55,9 @@ export const addTable = (table:ITable): ThunkType => async (dispatch) => {
     try {
         dispatch(tableActions.setLoading(true))
         let data = await  TableService.addTable(table)
+        let data2 = await TableService.getAllTables()
         dispatch(tableActions.setTableData(data.table))
+        dispatch(tableActions.setTablesData(data2.tables))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown table error'
         dispatch(tableActions.setError(msg))
@@ -125,7 +127,9 @@ export const editTable = (tableNum:number,capacity:number,isAvailable:boolean,is
     try {
         dispatch(tableActions.setLoading(true))
         let data = await TableService.editTable(tableNum,capacity,isAvailable,isInside)
+        let data2 = await TableService.getAllTables()
         dispatch(tableActions.setTableData(data.table))
+        dispatch(tableActions.setTablesData(data2.tables))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown table error'
         dispatch(tableActions.setError(msg))
@@ -138,7 +142,9 @@ export const deleteTable = (tableNum:number): ThunkType => async (dispatch) => {
     try {
         dispatch(tableActions.setLoading(true))
         await TableService.deleteTable(tableNum)
+        let data = await TableService.getAllTables()
         dispatch(tableActions.setTableData(null))
+        dispatch(tableActions.setTablesData(data.tables))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown table error'
         dispatch(tableActions.setError(msg))

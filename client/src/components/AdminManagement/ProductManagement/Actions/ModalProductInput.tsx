@@ -120,7 +120,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
                okText={"Save"}
        >
            <b>Category:</b><Input value={category} allowClear onChange={(e)=>{setCategory(e.target.value)  }} />
-           <b>Product Name:</b><Input value={productName} allowClear onChange={(e)=>{setProductName(e.target.value)}} />
+           <b>Product Name:</b><Input value={productName} disabled={!!product} allowClear onChange={(e)=>{setProductName(e.target.value)}} />
            <Upload
                name="pic"
                listType="picture-card"

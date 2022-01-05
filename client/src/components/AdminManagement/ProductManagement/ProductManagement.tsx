@@ -49,17 +49,17 @@ const ProductManagement:FC = () => {
         }else if(allProducts){
             tempProducts = allProducts
         }
-        if(sale){
+        if(tempProducts.length >0 && sale){
             tempProducts = tempProducts.filter(p=> p.salePrice && p.salePrice > 0)
         }
-        if(special){
+        if(tempProducts.length >0 && special){
             tempProducts = tempProducts.filter(p=> p.isSpecial===true)
         }
-        if(range[0]>0 || range[1]<150){
+        if(tempProducts.length >0 && (range[0]>0 || range[1]<150)){
             tempProducts = tempProducts.filter(p=> p.price && p.price>=range[0] && p.price <=range[1])
         }
         setProducts(tempProducts)
-    },[products,selected,allProducts,sale,special,range])
+    },[selected,allProducts,sale,special,range])
     return (
         <>
             <MyMenu setSelected={setSelected} selected={selected} products={allProducts} range={range} sale={sale}

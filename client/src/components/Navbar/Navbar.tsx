@@ -6,6 +6,7 @@ import {AppStateType} from '../../redux/Store';
 import {Badge, Layout, Menu} from "antd";
 import {
     CaretDownOutlined,
+    GatewayOutlined,
     LoginOutlined,
     LogoutOutlined,
     QuestionOutlined, ShopOutlined, ShoppingCartOutlined,
@@ -41,6 +42,7 @@ const Navbar: React.FC = () => {
                     </SubMenu>
                     <Menu.Item key="stafreg"><Link to="/staffregister"><UsergroupAddOutlined/> Register Staff</Link></Menu.Item>
                     <Menu.Item key="prod-management"> <Link to="/product-management"><ShopOutlined /> Product Management</Link></Menu.Item>
+                    <Menu.Item key="table-management"> <Link to="/table-management"><GatewayOutlined /> Table Management</Link></Menu.Item>
                 </Menu>
                 :
                 <Menu theme="dark" mode="horizontal">
