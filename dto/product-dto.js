@@ -19,6 +19,6 @@ module.exports = class ProductDto {
     }
     static productToDto(product){
         return new ProductDto(product.productName,product.category,
-            product.price,product.imgUrl,product.inStock,product.salePrice,product.isSpecial,product.desc)
+            product.price,`https://localhost:5000/${product.imgUrl}`,product.inStock,product.salePrice,product.isSpecial,product.desc)
     }
 }

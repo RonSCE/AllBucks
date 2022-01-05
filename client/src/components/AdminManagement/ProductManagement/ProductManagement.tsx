@@ -15,6 +15,10 @@ const ProductManagement:FC = () => {
     const [isEditing,setEditing]= useState(false)
     const [isAdding,setAdding] = useState(false)
     const [products,setProducts] = useState(allProducts || [] as IProduct[])
+    const [sale,setSale]=useState<boolean | null>(null)
+    const [range,setRange]=useState<[number,number]>([0,150])
+    const [special,setSpecial]=useState<boolean | null>(null)
+    let tempProducts = [] as IProduct[]
     useEffect(()=>{
         dispatch(getAllProducts())
         setProducts(allProducts)
@@ -40,15 +44,26 @@ const ProductManagement:FC = () => {
     }
     const [product,setProduct]= useState<IProduct|null>(null)
     useEffect(()=>{
-        if(allProducts && selected !=="All" ){
-            setProducts(allProducts.filter(p=> p.category === selected))
+        if(allProducts && selected !=="All"){
+            tempProducts =allProducts.filter(p=> p.category === selected)
         }else if(allProducts){
-            setProducts(allProducts)
+            tempProducts = allProducts
         }
-    },[products,selected,allProducts])
+        if(sale){
+            tempProducts = tempProducts.filter(p=> p.salePrice && p.salePrice > 0)
+        }
+        if(special){
+            tempProducts = tempProducts.filter(p=> p.isSpecial===true)
+        }
+        if(range[0]>0 && range[1]<150){
+            tempProducts = tempProducts.filter(p=> p.price && p.price>=range[0] && p.price <=range[1])
+        }
+        setProducts(tempProducts)
+    },[products,selected,allProducts,sale,special,range])
     return (
         <>
-            <MyMenu setSelected={setSelected} selected={selected} products={allProducts}/>
+            <MyMenu setSelected={setSelected} selected={selected} products={allProducts} range={range} sale={sale}
+                    setRange={setRange} setSale={setSale} special={special} setSpecial={setSpecial}/>
             { products &&
             <List
                 className="item-list"

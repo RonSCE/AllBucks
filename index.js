@@ -20,7 +20,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL
 }));
 app.use(express.static(__dirname + '/uploads'));
-app.use('/', express.static('uploads'));
+app.use('/', express.static('/uploads'));
 app.use("/api/auth", authRoute)
 app.use("/api/product", prodRoute)
 app.use("/api/table", tableRoute)
