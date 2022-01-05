@@ -46,7 +46,7 @@ const TableManagement:FC = () => {
                 loading={isLoading}
                 dataSource={tables}
                 renderItem={table => (
-                    <List.Item className={"item"}
+                    <List.Item className={"table-item"}
                                actions={[<a className={"edit-item"} onClick={()=>{onEdit(table)}}>Edit</a>,
                                    <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={()=>{onDelete(table.tableNum as number)}}>
                                        <a className={"delete-item"} >Delete</a>

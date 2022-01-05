@@ -7,13 +7,16 @@ import {Card, Layout, Row, Spin, Typography} from "antd";
 import {initializeApp} from "./redux/reducers/app-reducer";
 import {AppRouter} from './router/AppRouter';
 import Navbar from './components/Navbar/Navbar';
+import {loadLocalOrder} from "./redux/reducers/order-reducer";
 
 
 const App: React.FC = () => {
     const dispatch = useDispatch()
     const isLoading = useSelector<AppStateType>(state => state.app.isLoading) as boolean
+    const userName = useSelector<AppStateType>(state => state.auth.user?.name) as string | undefined
     useEffect(() => {
         dispatch(initializeApp())
+        dispatch(loadLocalOrder(userName))
     }, [])
     return (
         <BrowserRouter>

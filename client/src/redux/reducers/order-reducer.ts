@@ -49,7 +49,35 @@ export const orderActions = {
     } as const)
 }
 
+export const loadLocalOrder = (orderedBy:string | undefined | null): ThunkType => async (dispatch) => {
+    try {
+        let order = localStorage.getItem("localOrder") as (IOrder | string)
+        if(order){
+            dispatch(orderActions.setOrderData(JSON.parse(order as string)))
+        }else{
+            order = {
+                orderedBy:orderedBy?orderedBy:"Guest",
+                status:"Unplaced",
+                orderedItems:[]
+            }
+            dispatch(orderActions.setOrderData(order as IOrder))
+        }
+    } catch (e: any) {
+        const msg = e.response?.data?.message || 'Unknown order error'
+        dispatch(orderActions.setError(msg))
+    }
 
+}
+export const setLocalOrder = (order : IOrder): ThunkType => async (dispatch) => {
+    try {
+        dispatch(orderActions.setOrderData(order))
+        localStorage.setItem("localOrder",JSON.stringify(order))
+    } catch (e: any) {
+        const msg = e.response?.data?.message || 'Unknown order error'
+        dispatch(orderActions.setError(msg))
+    }
+
+}
 
 export const createOrder = (orderedBy: string, orderedItems: IOrder[]): ThunkType => async (dispatch) => {
     try {

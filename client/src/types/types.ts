@@ -16,6 +16,7 @@ export interface IOrderedProduct{
     productName: string | null
     quantity: number | null
     price: number | null
+    salePrice: number | null
 }
 export interface IOrder {
     orderedBy:string | null

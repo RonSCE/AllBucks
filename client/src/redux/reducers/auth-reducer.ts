@@ -2,6 +2,7 @@ import AuthService from "../../api/auth-api"
 import {BaseThunkType, InferActionsTypes} from '../Store';
 import {IUser} from "../../types/types";
 import {appActions} from "./app-reducer";
+import {loadLocalOrder} from "./order-reducer";
 let initialState = {
     user: null as (IUser | null),
     isAuth: false,
@@ -48,7 +49,6 @@ export const getAuthUserData = (): ThunkType => async (dispatch) => {
         if (localStorage.getItem('accessToken')) {
             let meData = await AuthService.me()
             dispatch(authActions.setAuthUserData(meData.user,true))
-
         }
     }catch (e) {
         console.log(e);
@@ -61,7 +61,13 @@ export const login = (email: string, password: string): ThunkType => async (disp
         let data = await AuthService.login(email, password);
         const accessToken = data.accessToken || ''
         localStorage.setItem('accessToken', accessToken)
-        await dispatch(getAuthUserData())
+        let meData
+        if (localStorage.getItem('accessToken')) {
+            meData = await AuthService.me()
+            dispatch(authActions.setAuthUserData(meData.user,true))
+        }
+        localStorage.removeItem("localOrder")
+        await dispatch(loadLocalOrder(meData?.user.name || undefined))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Incorrect login or password'
         dispatch(authActions.setAuthError(msg))
@@ -73,6 +79,8 @@ export const login = (email: string, password: string): ThunkType => async (disp
 export const logout = ():ThunkType => async (dispatch ) => {
     localStorage.removeItem("accessToken")
     dispatch(authActions.logout())
+    localStorage.removeItem("localOrder")
+    await dispatch(loadLocalOrder(undefined))
 }
 export const register = (email: string, password: string,name:string): ThunkType => async (dispatch) => {
     try {

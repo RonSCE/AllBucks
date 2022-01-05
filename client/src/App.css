@@ -103,8 +103,23 @@
   margin: 10px 5px 5px 10px;
   flex-grow: 1;
 }
+.table-item{
+  width: 180px;
+  padding: 5px;
+  display: inline-block;
+  border :2px solid grey ;
+  margin: 5px 2px 2px 5px;
+  flex-grow: 1;
+}
 .add-prod-bnt{
 position: fixed;
   top: 70%;
   left:80%;
+}
+.cart-btn{
+  margin-top: 10px;
+  margin-right: 10px;
+}
+.cart-input{
+  margin-right: 8px;
 }

@@ -1,12 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
-import {IUser, userTypes} from '../../types/types';
+import {IOrder, IUser, userTypes} from '../../types/types';
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from '../../redux/Store';
 import {Badge, Layout, Menu} from "antd";
 import {
     CaretDownOutlined,
     GatewayOutlined,
+    HomeOutlined,
     LoginOutlined,
     LogoutOutlined,
     QuestionOutlined, ShopOutlined, ShoppingCartOutlined,
@@ -19,6 +20,7 @@ import {logout} from "../../redux/reducers/auth-reducer";
 
 const Navbar: React.FC = () => {
     const dispatch = useDispatch()
+    const currentOrder = useSelector<AppStateType>(state => state.order.currentOrder ) as IOrder
     const user = useSelector<AppStateType>(state => state.auth.user ) as IUser
     const isAuth = useSelector<AppStateType>(state => state.auth.isAuth ) as boolean
     const onLogout = () => {
@@ -30,11 +32,12 @@ const Navbar: React.FC = () => {
     return (
         <Layout.Header className={"header minWidth"}>
             {isAuth && user.type===userTypes.Admin ?
+
                 <Menu theme="dark" mode="horizontal">
                     <Menu.Item key="cart"><Link to="">
-                        <ShoppingCartOutlined/> <Badge count={ 25 } />
-
+                        <ShoppingCartOutlined/> <Badge count={currentOrder&& currentOrder.orderedItems.length || 0} />
                     </Link></Menu.Item>
+                    <Menu.Item key="home"><Link to="/"><HomeOutlined /> Home</Link></Menu.Item>
                     <SubMenu key="sub-menu-user" icon={<UserOutlined/>}
                              title={<>{user?.name || 'unknown'  } <CaretDownOutlined/></>}>
                         <Menu.Item key="logout" onClick={onLogout} icon={<LogoutOutlined/>}> Logout</Menu.Item>
@@ -46,7 +49,10 @@ const Navbar: React.FC = () => {
                 </Menu>
                 :
                 <Menu theme="dark" mode="horizontal">
-
+                    <Menu.Item key="cart"><Link to="/cart">
+                        <ShoppingCartOutlined/> <Badge count={   currentOrder&& currentOrder.orderedItems.length || 0 } />
+                    </Link></Menu.Item>
+                    <Menu.Item key="home"><Link to="/"><HomeOutlined /> Home</Link></Menu.Item>
                     <Menu.Item key="login"><Link to="/login"><LoginOutlined/> Login</Link></Menu.Item>
                     <Menu.Item key="register"> <Link to="/register"><UserAddOutlined/> Register</Link></Menu.Item>
                 </Menu>
