@@ -1,5 +1,8 @@
+
+
 const productService = require('../service/product-service');
 const ApiError = require('../exceptions/api-error');
+
 
 
 class ProductController {
@@ -12,11 +15,7 @@ class ProductController {
     async addProduct(req, res, next) {
         try {
             ProductController.checkUserType(req)
-            const {productName,category,price,inStock,salePrice,isSpecial,desc} = req.body;
-
-            let imgUrl = "";
-            if(req.file)
-                imgUrl= req.file.filename;
+            const {productName,category,price,inStock,salePrice,isSpecial,desc,imgUrl} = req.body;
             const product = await productService.addProduct(productName,category,price,imgUrl,inStock,salePrice,isSpecial,desc)
             res.json({product})
         } catch (err) {
@@ -28,12 +27,7 @@ class ProductController {
         try {
             ProductController.checkUserType(req)
             const productName = req.params.name
-            const {newProductName,category,price,inStock,salePrice,isSpecial,desc} = req.body
-
-            let imgUrl = undefined
-            if(req.file) {
-                imgUrl = req.file.filename;
-            }
+            const {newProductName,category,price,inStock,salePrice,isSpecial,desc,imgUrl} = req.body
             const product = await productService.editProduct(productName,newProductName,
                 category,price,imgUrl,inStock,salePrice,isSpecial,desc)
             res.json({product})
@@ -71,7 +65,18 @@ class ProductController {
             next(err);
         }
     }
-
+    async upload(req,res,next){
+        try {
+            const  imageUrl = req.file.filename;
+            res.json({
+                "status": "done",
+                "url": imageUrl,
+                "thumbUrl": imageUrl
+            })
+        }catch (err){
+            next(err)
+        }
+    }
 
 }
 

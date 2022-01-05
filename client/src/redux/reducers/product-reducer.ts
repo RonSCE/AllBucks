@@ -51,7 +51,7 @@ export const productActions = {
 
 
 
-export const addProduct = (product: IProduct,img: File | null): ThunkType => async (dispatch) => {
+export const addProduct = (product: IProduct,img: string): ThunkType => async (dispatch) => {
     try {
         dispatch(productActions.setLoading(true))
         let data = await  ProductService.addProduct(product,img)
@@ -68,7 +68,7 @@ export const addProduct = (product: IProduct,img: File | null): ThunkType => asy
 }
 
 
-export const editProduct = (product:IProduct,img:File | null): ThunkType => async (dispatch) => {
+export const editProduct = (product:IProduct,img:string): ThunkType => async (dispatch) => {
     try {
         dispatch(productActions.setLoading(true))
         let data = await  ProductService.editProduct(product,img)

@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Input, InputNumber, Modal, Switch, Upload} from "antd";
-import {PlusOutlined} from "@ant-design/icons";
+import {Input, InputNumber, message, Modal, Switch, Upload} from "antd";
+import {LoadingOutlined, PlusOutlined} from "@ant-design/icons";
 import TextArea from "antd/lib/input/TextArea";
 import {IProduct} from "../../../../types/types";
 interface InputProps{
@@ -8,11 +8,12 @@ interface InputProps{
     setProduct:(prod:IProduct)=>void | null
     visible:boolean
     setVisible:(visible:boolean) => void
-    onOk:(product:IProduct | null,img:File | null) => void
+    onOk:(product:IProduct | null,img:string) => void
     isLoading:boolean
 }
 const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,onOk,setProduct}) => {
-    const [file,setFile] = useState<File | null>(null )
+    const [imgUrl,setImgUrl] = useState<string>("" )
+    const [Url,setUrl] = useState<string>("" )
     const [isSpecial,setSpecial] = useState( false)
     const [inStock,setStock] = useState(false)
     const [category,setCategory] = useState( "")
@@ -20,6 +21,43 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
     const [price,setPrice] = useState(0)
     const [salePrice,setSalePrice] = useState(0)
     const [desc,setDesc] = useState("")
+    const [loadingImg,setLoadingImg]=useState(false)
+    function getBase64(img:File, callback:any) {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    }
+    function beforeUpload(file:File) {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 4;
+        if (!isLt2M) {
+            message.error('Image must smaller than 4MB!');
+        }
+        return isJpgOrPng && isLt2M;
+    }
+    const handleChange = (info:any) => {
+        if (info.file.status === 'uploading') {
+            setLoadingImg(true );
+            return;
+        }
+        if (info.file.status === 'done') {
+            console.log(info);
+            getBase64(info.file.originFileObj, (imageUrl:string) =>{
+                setImgUrl(imageUrl)
+                setUrl(info.file.response.url)
+                setLoadingImg(false)}
+            );
+        }
+    };
+    const uploadButton = (
+        <div>
+            {loadingImg ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </div>
+    );
     useEffect(()=>{
         setSpecial(product?.isSpecial || false)
         setStock(product?.inStock|| false)
@@ -60,7 +98,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
     }
     const onOkAction = () => {
         setProd();
-        onOk(product,file);
+        onOk(product,Url);
         clearInput();
     }
     const  clearInput= () => {
@@ -84,17 +122,18 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
            <b>Category:</b><Input value={category} allowClear onChange={(e)=>{setCategory(e.target.value)  }} />
            <b>Product Name:</b><Input value={productName} allowClear onChange={(e)=>{setProductName(e.target.value)}} />
            <Upload
-                name="avatar"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList={false}
-
+               name="pic"
+               listType="picture-card"
+               className="avatar-uploader"
+               showUploadList={false}
+               action="https://localhost:5000/api/product/upload-img"
+               method={"POST"}
+               maxCount={1}
+               beforeUpload={beforeUpload}
+               onChange={handleChange}
            >
-            {product&&product.imgUrl ? <img src={product.imgUrl} alt="avatar" style={{ width: '100%' }} /> : <div>
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Upload</div>
-            </div>}
-            </Upload>
+               {imgUrl ? <img src={imgUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+           </Upload>
             <b>Price</b><br/><InputNumber value={price} min={1} max={1000}  onChange={(e)=>{ setPrice(e)}} />
             <br/><b>Sale Price</b><br/><InputNumber value={salePrice } min={1} max={1000} onChange={(e)=>{setSalePrice(e)  }} />
             <br/><b>Is In Stock:</b><Switch checked={inStock} onChange={(e)=>{setStock(e)}} />

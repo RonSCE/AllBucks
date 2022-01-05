@@ -27,11 +27,11 @@ const ProductManagement:FC = () => {
         setProducts(allProducts)
     },[allProducts])
     const isLoading = useSelector<AppStateType>(state=>state.product.isLoading)  as boolean
-    const onOk =(product: IProduct| null,img:File | null) => {
+    const onOk =(product: IProduct| null,img:string) => {
         dispatch(editProduct(product as IProduct,img))
         setEditing(false)
     }
-    const onAdd = (product: IProduct| null,img:File | null) => {
+    const onAdd = (product: IProduct| null,img:string) => {
             dispatch(addProduct(product as IProduct,img))
             setAdding(false)
     }
@@ -55,7 +55,7 @@ const ProductManagement:FC = () => {
         if(special){
             tempProducts = tempProducts.filter(p=> p.isSpecial===true)
         }
-        if(range[0]>0 && range[1]<150){
+        if(range[0]>0 || range[1]<150){
             tempProducts = tempProducts.filter(p=> p.price && p.price>=range[0] && p.price <=range[1])
         }
         setProducts(tempProducts)
