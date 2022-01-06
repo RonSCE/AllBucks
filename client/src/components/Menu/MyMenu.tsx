@@ -25,7 +25,7 @@ const MyMenu:FC<MenuProps> = ({products,selected,setSelected,
     let categories = products? Array.from(new Set(products.map(p=>p.category))):[]
     return (
         <div style={{ width: 230 ,float:"left"}}>
-            <h2><b>Products:</b></h2>
+            <h2 style={{marginLeft:45}}><b>Products:</b></h2>
             <Menu
                 style={{position:"fixed",width: 230}}
                 defaultSelectedKeys={[selected]}

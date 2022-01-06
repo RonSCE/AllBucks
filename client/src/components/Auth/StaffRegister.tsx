@@ -79,7 +79,7 @@ const Register:React.FC = () => {
                                 name="Type"
                                 rules={[{
                                     required: true,
-                                    pattern :/^(Admin|Barista)$/,
+                                    pattern :/^(Admin|Barista|Member)$/,
                                     message: "Please enter correct user type"
                                 }]}
                             >

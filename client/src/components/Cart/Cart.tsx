@@ -90,6 +90,7 @@ const Cart:React.FC = () => {
                         bordered
                         column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
                     >
+                        <Descriptions.Item label="Order ID" span={4}>{currentOrder.orderId}</Descriptions.Item>
                         <Descriptions.Item label="Customer" span={4}>{currentOrder.orderedBy}</Descriptions.Item>
                         <Descriptions.Item label="Status" span={4}>
                             <Badge status="processing" text={currentOrder.status} />

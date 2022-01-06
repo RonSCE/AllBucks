@@ -79,7 +79,7 @@ const ProductManagement:FC = () => {
                 loading={isLoading}
                 dataSource={products}
                 renderItem={prod => (
-                    <List.Item className={"item"}
+                    <List.Item style={{borderBottom:"2px solid grey"}} className={"item"}
                         actions={[<a className={"edit-item"} onClick={()=>{onEdit(prod)}}>Edit</a>,
                             <Popconfirm title="Are you sure？" okText="Yes" cancelText="No" onConfirm={()=>{onDelete(prod.productName as string)}}>
                                 <a className={"delete-item"} >Delete</a>

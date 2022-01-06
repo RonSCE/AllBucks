@@ -56,6 +56,7 @@ export const loadLocalOrder = (orderedBy:string | undefined | null): ThunkType =
             dispatch(orderActions.setOrderData(JSON.parse(order as string)))
         }else{
             order = {
+                orderId:"Unplaced",
                 orderedBy:orderedBy?orderedBy:"Guest",
                 status:"Unplaced",
                 orderedItems:[]

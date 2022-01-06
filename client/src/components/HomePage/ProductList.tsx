@@ -87,7 +87,7 @@ const ProductManagement:FC = () => {
                 loading={isLoading}
                 dataSource={products}
                 renderItem={prod => (
-                    <List.Item className={"item"}
+                    <List.Item style={{borderBottom:"2px solid grey"}} className={"item"}
                                actions={[
                                    <a className={"edit-item"} onClick={()=>{onAdd(prod)}}><PlusSquareOutlined /> Add To Cart</a>
                                ]}

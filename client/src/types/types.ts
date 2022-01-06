@@ -19,6 +19,7 @@ export interface IOrderedProduct{
     salePrice: number | null
 }
 export interface IOrder {
+    orderId:string | "Unplaced"
     orderedBy:string | null
     status: string | null
     orderedItems: IOrderedProduct[]
