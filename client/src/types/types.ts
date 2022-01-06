@@ -33,7 +33,7 @@ export interface ITable{
 export interface IProduct{
     productName: string | null
     category: string | null
-    price: number| null
+    price: number
     imgUrl: string | null
     desc: string | null
     inStock:boolean| null

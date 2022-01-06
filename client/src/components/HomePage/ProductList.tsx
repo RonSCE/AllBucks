@@ -16,10 +16,12 @@ const ProductManagement:FC = () => {
     const [sale,setSale]=useState<boolean | null>(null)
     const [range,setRange]=useState<[number,number]>([0,150])
     const [special,setSpecial]=useState<boolean | null>(null)
+    const [sortOrder,setSortOrder] = useState<boolean | null>(null)
     const currentOrder = useSelector<AppStateType>(state=>state.order.currentOrder) as IOrder
     const calcSale= (price:number,salePrice:number)=>{
         return (((price-salePrice)/(price/100))).toFixed(2)
     }
+
     let tempProducts = [] as IProduct[]
     useEffect(()=>{
         dispatch(getAllProducts())
@@ -54,6 +56,8 @@ const ProductManagement:FC = () => {
             tempProducts =allProducts.filter(p=> p.category === selected)
         }else if(allProducts){
             tempProducts = allProducts
+        }else{
+            tempProducts = []
         }
         if(tempProducts.length >0 && sale){
             tempProducts = tempProducts.filter(p=> p.salePrice && p.salePrice > 0)
@@ -64,14 +68,21 @@ const ProductManagement:FC = () => {
         if(tempProducts.length >0 && (range[0]>0 || range[1]<150)){
             tempProducts = tempProducts.filter(p=> p.price && p.price>=range[0] && p.price <=range[1])
         }
+        if(sortOrder){
+            tempProducts = [...tempProducts.sort((p1,p2)=> p1.price - p2.price)]
+        }else if(sortOrder===false){
+            tempProducts =[...tempProducts.sort((p1,p2)=> p2.price - p1.price)]
+        }
         setProducts(tempProducts)
-    },[selected,allProducts,sale,special,range])
+    },[selected,allProducts,sale,special,range,sortOrder])
     return (
         <>
             <MyMenu setSelected={setSelected} selected={selected} products={allProducts} range={range} sale={sale}
-                    setRange={setRange} setSale={setSale} special={special} setSpecial={setSpecial}/>
+                    setRange={setRange} setSale={setSale}
+                    special={special} setSpecial={setSpecial} setSortOrder={setSortOrder} sortOrder={sortOrder} />
             { products &&
             <List
+
                 className="item-list"
                 loading={isLoading}
                 dataSource={products}

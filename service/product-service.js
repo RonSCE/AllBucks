@@ -52,7 +52,7 @@ class ProductService {
 
     async getAllProducts() {
         const products = await Product.find({})
-        return products.map(prod => ProductDto.productToDto(prod))
+        return products.map(prod => ProductDto.productToDto(prod)).sort((p1,p2)=> p1.price - p2.price)
     }
 
     async getOneProduct(productName) {
