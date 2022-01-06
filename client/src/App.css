@@ -123,3 +123,7 @@ position: fixed;
 .cart-input{
   margin-right: 8px;
 }
+.ribbon{
+  margin-right: 55px;
+  position: absolute ;
+}

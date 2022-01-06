@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {authActions} from '../../redux/reducers/auth-reducer';
 import {AppStateType} from "../../redux/Store";
 import {Badge, Button, Card, Descriptions, InputNumber, Layout, notification, Row, Tooltip} from "antd";
-import {IOrder} from "../../types/types";
+import {IOrder, IOrderedProduct} from "../../types/types";
 import {setLocalOrder} from "../../redux/reducers/order-reducer";
 import {DeleteOutlined} from '@ant-design/icons';
 
@@ -33,13 +33,22 @@ const Cart:React.FC = () => {
         currentOrder.orderedItems = currentOrder.orderedItems.filter(i=> i.productName !== productName)
         dispatch(setLocalOrder({...currentOrder}))
     }
+    const calcRegularPrice = (items:IOrderedProduct[])=> {
+        return items.map(i => i.price*i.quantity ).reduce((sum, price) => sum + price, 0)
+    }
+    const calcDiscount = (items:IOrderedProduct[])=> {
+        return calcRegularPrice(items) - calcFinalPrice(items)
+    }
+    const calcFinalPrice = (items:IOrderedProduct[])=> {
+        return items.map(i => i.salePrice?i.salePrice*i.quantity:i.price*i.quantity ).reduce((sum, price) => sum + price, 0)
+    }
     return (
         <Layout>
             <Row justify="center" align="middle" className="h100">
                 {editMode ?
                     <Card className="card" >
                         <Descriptions
-                            title="Responsive Descriptions"
+                            title="Cart"
                             bordered
                             column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
                         >
@@ -57,13 +66,13 @@ const Cart:React.FC = () => {
                                             <Button type="primary" onClick={()=>onDelete(i.productName as string)} danger shape="circle" icon={<DeleteOutlined />} />
                                         </Tooltip>
                                     </Descriptions.Item>
-                                    <Descriptions.Item label={"Regular Price:"}> {i.price}</Descriptions.Item>
-                                    <Descriptions.Item label={"Sale Price:"}> {i.salePrice? i.salePrice : "None"}</Descriptions.Item>
+                                    <Descriptions.Item label={"Regular Price:"}> {i.price}₪</Descriptions.Item>
+                                    <Descriptions.Item label={"Sale Price:"}> {i.salePrice? i.salePrice + '₪' : "None"}</Descriptions.Item>
                                 </>
                             )}
-                            <Descriptions.Item label="Negotiated Amount">$80.00</Descriptions.Item>
-                            <Descriptions.Item label="Discount">$20.00</Descriptions.Item>
-                            <Descriptions.Item label="Official Receipts">$60.00</Descriptions.Item>
+                            <Descriptions.Item label="Amount Before Sale"><b>{calcRegularPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                            <Descriptions.Item label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                            <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                         </Descriptions>
                         <Button type="primary" className={"cart-btn"} onClick={onUpdate}>
                             Update
@@ -77,7 +86,7 @@ const Cart:React.FC = () => {
                 :
                 <Card className="card" >
                     <Descriptions
-                        title="Responsive Descriptions"
+                        title="Cart"
                         bordered
                         column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
                     >
@@ -90,19 +99,19 @@ const Cart:React.FC = () => {
                             <>
                             <Descriptions.Item label={"Product:"}> {i.productName} </Descriptions.Item>
                             <Descriptions.Item label={"Quantity:"}>{i.quantity} </Descriptions.Item>
-                            <Descriptions.Item label={"Regular Price:"}> {i.price}</Descriptions.Item>
-                            <Descriptions.Item label={"Sale Price:"}> {i.salePrice? i.salePrice : "None"}</Descriptions.Item>
+                            <Descriptions.Item label={"Regular Price:"}> {i.price}₪</Descriptions.Item>
+                            <Descriptions.Item label={"Sale Price:"}> {i.salePrice? i.salePrice +'₪' : "None"}</Descriptions.Item>
                             </>
                         )}
-                        <Descriptions.Item label="Negotiated Amount">$80.00</Descriptions.Item>
-                        <Descriptions.Item label="Discount">$20.00</Descriptions.Item>
-                        <Descriptions.Item label="Official Receipts">$60.00</Descriptions.Item>
+                        <Descriptions.Item label="Amount Before Sale"><b>{calcRegularPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                        <Descriptions.Item label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                        <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                     </Descriptions>
                     <Button type="primary" className={"cart-btn"} onClick={()=> {}}>
                         Check Out
                     </Button>
                     <Button type="primary" className={"cart-btn"} onClick={()=>setEditMode(true)}>
-                        Edit Order
+                        Edit Cart
                     </Button>
                 </Card>}
 

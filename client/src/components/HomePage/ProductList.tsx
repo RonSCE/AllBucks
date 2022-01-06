@@ -1,5 +1,5 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Avatar, List, message, Popover, Skeleton} from "antd";
+import {Avatar, Badge, List, message, Popover, Skeleton, Typography} from "antd";
 import {PlusSquareOutlined} from "@ant-design/icons";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../redux/Store";
@@ -17,6 +17,9 @@ const ProductManagement:FC = () => {
     const [range,setRange]=useState<[number,number]>([0,150])
     const [special,setSpecial]=useState<boolean | null>(null)
     const currentOrder = useSelector<AppStateType>(state=>state.order.currentOrder) as IOrder
+    const calcSale= (price:number,salePrice:number)=>{
+        return (((price-salePrice)/(price/100))).toFixed(2)
+    }
     let tempProducts = [] as IProduct[]
     useEffect(()=>{
         dispatch(getAllProducts())
@@ -74,13 +77,20 @@ const ProductManagement:FC = () => {
                 dataSource={products}
                 renderItem={prod => (
                     <List.Item className={"item"}
-                               actions={[<a className={"edit-item"} onClick={()=>{onAdd(prod)}}><PlusSquareOutlined /> Add To Cart</a>]}
+                               actions={[
+                                   <a className={"edit-item"} onClick={()=>{onAdd(prod)}}><PlusSquareOutlined /> Add To Cart</a>
+                               ]}
                     >
                         <Skeleton avatar title={false} loading={isLoading} active>
                             <List.Item.Meta
-                                avatar={<Avatar src={prod.imgUrl} size={160} shape={"square"}/>}
-                                title={<b>{prod.productName}</b>}
+                                avatar={
+                                        <Avatar src={prod.imgUrl} size={160} shape={"square"}/>
+                                }
+                                title={
+                                    <b>{prod.productName}</b>
+                                }
                                 description={
+
                                     <div>
                                         <Popover content={<p>{prod.desc}</p>} title="Description" >
                                             <b>Description - Hover To See</b>
@@ -89,8 +99,23 @@ const ProductManagement:FC = () => {
                                         <br/>
                                         <div><b>Category:</b>{prod.category}</div>
                                         <div><b>Is In stock:</b>{prod.inStock ? "Yes": "No"}</div>
-                                        <div><b>Regular price:</b>{prod.price}NIS</div>
-                                        <div><b>Sale Price:</b>{prod.salePrice || 'None' }</div>
+                                        <div><b>Price:</b>
+                                                {prod.salePrice?
+                                                    <>
+                                                    <Typography.Text delete> {prod.price}₪</Typography.Text>
+                                                        {"   "}
+                                                     <Typography.Text type="danger">{prod.salePrice}₪</Typography.Text>
+                                                        <Badge.Ribbon text="Sale" placement={"end"} color="volcano">
+                                                        </Badge.Ribbon>
+                                                        <Typography.Text type="warning">{calcSale(prod.price as number, prod.salePrice)} % OFF</Typography.Text>
+                                                    </>
+
+                                                     :
+                                                    <span>{prod.price}₪</span>
+                                                }
+
+                                        </div>
+
                                         <div><b>Is special:</b>{prod.isSpecial ? "Yes" : 'No'}</div>
                                     </div>
                                 }

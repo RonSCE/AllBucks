@@ -13,9 +13,9 @@ export enum userTypes{
     Admin="Admin",
 }
 export interface IOrderedProduct{
-    productName: string | null
-    quantity: number | null
-    price: number | null
+    productName: string
+    quantity: number
+    price: number
     salePrice: number | null
 }
 export interface IOrder {
