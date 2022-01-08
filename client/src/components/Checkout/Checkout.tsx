@@ -318,7 +318,8 @@ const Checkout:FC = () => {
                         </>
                         :user && user.type === "Barista"?
                         <>
-                        <div><b>Total Points Spent:</b>{spentPoints}</div>
+                        {customer && customer.points && customer.points>0 &&
+                        <div><b>Total Points Spent:</b>{spentPoints}</div>}
                         <div><b>Total Cash Spent:</b>{payedWithCash}₪</div>
                         <div><b>Total Cash Spent (with credit card):</b>{finalPrice-spentPoints-payedWithCash}₪</div>
                         </>
