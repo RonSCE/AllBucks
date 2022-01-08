@@ -18,6 +18,7 @@ const ProductManagement:FC = () => {
     const [sale,setSale]=useState<boolean | null>(null)
     const [range,setRange]=useState<[number,number]>([0,150])
     const [special,setSpecial]=useState<boolean | null>(null)
+    const [available,setAvailable]=useState<boolean>(false)
     const [sortOrder,setSortOrder] = useState<boolean|null>(null) //true:ascend - false : descend
     let tempProducts = [] as IProduct[]
     useEffect(()=>{
@@ -45,12 +46,18 @@ const ProductManagement:FC = () => {
     }
     const [product,setProduct]= useState<IProduct|null>(null)
     useEffect(()=>{
-        if(allProducts && selected !=="All"){
-            tempProducts =allProducts.filter(p=> p.category === selected)
+        if(!available && allProducts){
+            tempProducts = allProducts.filter(p=>p.inStock)
         }else if(allProducts){
             tempProducts = allProducts
         }else{
             tempProducts = []
+        }
+        if(allProducts && selected !=="All"){
+            tempProducts =allProducts.filter(p=> p.category === selected)
+            if(!available){
+                tempProducts = tempProducts.filter(p=>p.inStock)
+            }
         }
         if(tempProducts.length >0 && sale){
             tempProducts = tempProducts.filter(p=> p.salePrice && p.salePrice > 0)
@@ -71,7 +78,7 @@ const ProductManagement:FC = () => {
     return (
         <>
             <MyMenu setSelected={setSelected} selected={selected} products={allProducts} range={range} sale={sale}
-                    setRange={setRange} setSale={setSale} special={special}
+                    setRange={setRange} setSale={setSale} special={special} available={available} setAvailable={setAvailable}
                     setSpecial={setSpecial} sortOrder={sortOrder} setSortOrder={setSortOrder}/>
             { products &&
             <List

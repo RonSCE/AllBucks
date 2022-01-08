@@ -16,6 +16,7 @@ const ProductManagement:FC = () => {
     const [sale,setSale]=useState<boolean | null>(null)
     const [range,setRange]=useState<[number,number]>([0,150])
     const [special,setSpecial]=useState<boolean | null>(null)
+    const [available,setAvailable]=useState<boolean>(false)
     const [sortOrder,setSortOrder] = useState<boolean | null>(null)
     const currentOrder = useSelector<AppStateType>(state=>state.order.currentOrder) as IOrder
     const calcSale= (price:number,salePrice:number)=>{
@@ -52,12 +53,18 @@ const ProductManagement:FC = () => {
         message.info(`${prod.productName} is added to cart`);
     };
     useEffect(()=>{
-        if(allProducts && selected !=="All"){
-            tempProducts =allProducts.filter(p=> p.category === selected)
+        if(!available && allProducts){
+            tempProducts = allProducts.filter(p=>p.inStock)
         }else if(allProducts){
             tempProducts = allProducts
         }else{
             tempProducts = []
+        }
+        if(allProducts && selected !=="All"){
+            tempProducts =allProducts.filter(p=> p.category === selected)
+            if(!available){
+                tempProducts = tempProducts.filter(p=>p.inStock)
+            }
         }
         if(tempProducts.length >0 && sale){
             tempProducts = tempProducts.filter(p=> p.salePrice && p.salePrice > 0)
@@ -74,12 +81,12 @@ const ProductManagement:FC = () => {
             tempProducts =[...tempProducts.sort((p1,p2)=> p2.price - p1.price)]
         }
         setProducts(tempProducts)
-    },[selected,allProducts,sale,special,range,sortOrder])
+    },[selected,allProducts,sale,special,range,sortOrder,available])
     return (
         <>
             <MyMenu setSelected={setSelected} selected={selected} products={allProducts} range={range} sale={sale}
-                    setRange={setRange} setSale={setSale}
-                    special={special} setSpecial={setSpecial} setSortOrder={setSortOrder} sortOrder={sortOrder} />
+                    setRange={setRange} setSale={setSale} available={available}
+                    special={special} setSpecial={setSpecial} setSortOrder={setSortOrder} sortOrder={sortOrder} setAvailable={setAvailable} />
             { products &&
             <List
 
@@ -89,7 +96,12 @@ const ProductManagement:FC = () => {
                 renderItem={prod => (
                     <List.Item style={{borderBottom:"2px solid grey"}} className={"item"}
                                actions={[
-                                   <a className={"edit-item"} onClick={()=>{onAdd(prod)}}><PlusSquareOutlined /> Add To Cart</a>
+                                   <>
+                                       {prod.inStock ? <a className={"edit-item"} onClick={()=>{onAdd(prod)}}><PlusSquareOutlined /> Add To Cart</a>:
+                                            <b style={{color:"red"}}>Unavailable</b>
+                                       }
+                                   </>
+
                                ]}
                     >
                         <Skeleton avatar title={false} loading={isLoading} active>
@@ -109,7 +121,6 @@ const ProductManagement:FC = () => {
 
                                         <br/>
                                         <div><b>Category:</b>{prod.category}</div>
-                                        <div><b>Is In stock:</b>{prod.inStock ? "Yes": "No"}</div>
                                         <div><b>Price:</b>
                                                 {prod.salePrice?
                                                     <>
@@ -126,8 +137,9 @@ const ProductManagement:FC = () => {
                                                 }
 
                                         </div>
+                                        {prod.isSpecial && <Badge.Ribbon style={{marginTop:3}} text="Special" color="green">
 
-                                        <div><b>Is special:</b>{prod.isSpecial ? "Yes" : 'No'}</div>
+                                        </Badge.Ribbon>}
                                     </div>
                                 }
                             />

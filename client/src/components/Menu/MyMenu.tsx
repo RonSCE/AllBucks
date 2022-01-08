@@ -15,13 +15,15 @@ interface MenuProps{
     range:[number,number]
     setRange:(range:[number,number])=>void
     sortOrder:boolean | null
+    available: boolean
+    setAvailable:  React.Dispatch<React.SetStateAction<boolean>>
     setSortOrder:  React.Dispatch<React.SetStateAction<boolean | null>>
 }
 
 
 const MyMenu:FC<MenuProps> = ({products,selected,setSelected,
                                   range,setRange,sale,
-                                  setSale,special,setSpecial,sortOrder,setSortOrder}) => {
+                                  setSale,special,setSpecial,sortOrder,setSortOrder,available,setAvailable}) => {
     let categories = products? Array.from(new Set(products.map(p=>p.category))):[]
     return (
         <div style={{ width: 230 ,float:"left"}}>
@@ -41,6 +43,7 @@ const MyMenu:FC<MenuProps> = ({products,selected,setSelected,
                 <SubMenu key="sub-menu-others" icon={<MinusOutlined />} title="Other Filters" >
                 <Menu.Item key = "Special"  onClick={()=>setSpecial(!special)}><Switch checked={!!special}  /> Special</Menu.Item>
                 <Menu.Item key = "Sale" onClick={()=> {setSale(!sale)}}><Switch checked={!!sale}  /> Sales</Menu.Item>
+                 <Menu.Item key = "Available" onClick={()=> {setAvailable(!available)}}><Switch checked={available} /> Show Unavailable</Menu.Item>
                 </SubMenu>
                 <SubMenu key="sub-menu-range" icon={<DollarCircleOutlined />} title="Price Range & Sorting" popupOffset={[20,20]}>
                 <Menu.Item key = "Range" onClick={()=>{}} unselectable={"on"}>
