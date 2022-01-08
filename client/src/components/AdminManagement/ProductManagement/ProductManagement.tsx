@@ -62,11 +62,11 @@ const ProductManagement:FC = () => {
             tempProducts = tempProducts.filter(p=> p.price && p.price>=range[0] && p.price <=range[1])
         }
         if(sortOrder){
-            tempProducts = tempProducts.sort((p1,p2)=> p1.price - p2.price)
-        }else{
-            tempProducts = tempProducts.sort((p1,p2)=> p2.price - p1.price)
+            tempProducts = [...tempProducts.sort((p1,p2)=> p1.price - p2.price)]
+        }else if(sortOrder===false){
+            tempProducts = [...tempProducts.sort((p1,p2)=> p2.price - p1.price)]
         }
-        setProducts([...tempProducts])
+        setProducts(tempProducts)
     },[selected,sortOrder,allProducts,sale,special,range])
     return (
         <>
