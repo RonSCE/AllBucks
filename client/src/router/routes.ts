@@ -8,6 +8,8 @@ import ProductList from "../components/HomePage/ProductList";
 import Cart from "../components/Cart/Cart";
 import Checkout from "../components/Checkout/Checkout";
 import OrderTracker from "../components/OrderTracker/OrderTracker";
+import OrderManagement from "../components/BaristaManagement/OrderManagement/OrderManagement";
+import TablesManagementBarista from "../components/BaristaManagement/TablesManagement/TablesManagementBarista";
 
 
 export interface IRoute {
@@ -25,7 +27,8 @@ export enum RouteNames {
     TABLE_MANAGEMENT = '/table-management',
     CART = '/cart',
     CHECKOUT = '/checkout',
-    TRACKING = '/tracking'
+    TRACKING = '/tracking',
+    ORDER_MANAGEMENT = '/order-management'
 }
 
 export const publicRoutes: IRoute[] = [
@@ -50,8 +53,12 @@ export const adminRoutes: IRoute[] = [
     {path: RouteNames.TABLE_MANAGEMENT, exact: true, component: TableManagement},
     {path: RouteNames.HOME, exact: true, component: ProductManagement}
 ]
+
 export const baristaRoutes: IRoute[] = [
     {path: RouteNames.TRACKING, exact: true, component: OrderTracker},
+    {path: RouteNames.CART, exact: true, component: Cart},
+    {path: RouteNames.CHECKOUT, exact: true, component: Checkout},
+    {path: RouteNames.ORDER_MANAGEMENT, exact: true, component: OrderManagement},
+    {path: RouteNames.TABLE_MANAGEMENT, exact: true, component: TablesManagementBarista},
     {path: RouteNames.HOME, exact: true, component: ProductList}
-
 ]

@@ -1,11 +1,12 @@
 import {BaseThunkType, InferActionsTypes} from '../Store';
-import {IOrder, IOrderedProduct} from "../../types/types";
+import {IOrder, IOrderedProduct, IUser} from "../../types/types";
 import OrderService from "../../api/order-api";
 import AuthService from "../../api/auth-api";
 import {authActions} from "./auth-reducer";
 let initialState = {
     currentOrder: null as (IOrder | null),
     trackingOrder: null as (IOrder | null),
+    currentCustomer: null as( IUser | null),
     orders: null as (IOrder[] | null),
     isLoading: false,
     error: '',
@@ -14,6 +15,7 @@ let initialState = {
 export enum OrderActions {
     SET_ORDER_DATA,
     SET_TRACKING_ORDER_DATA,
+    SET_CURRENT_CUSTOMER,
     SET_ORDERS_DATA,
     SET_ERROR,
     SET_LOADING
@@ -26,6 +28,7 @@ const orderReducer = (state: InitialStateType = initialState, action: ActionsTyp
         case OrderActions.SET_ERROR:
         case OrderActions.SET_LOADING:
         case OrderActions.SET_TRACKING_ORDER_DATA:
+        case OrderActions.SET_CURRENT_CUSTOMER:
             return {
                 ...state,
                 ...action.payload
@@ -55,6 +58,10 @@ export const orderActions = {
     setLoading: (isLoading: boolean) => ({
         type: OrderActions.SET_LOADING,
         payload: {isLoading}
+    } as const),
+    setCustomer: (customer: IUser | null) => ({
+        type: OrderActions.SET_CURRENT_CUSTOMER,
+        payload: {currentCustomer: customer}
     } as const)
 }
 
@@ -90,10 +97,10 @@ export const setLocalOrder = (order : IOrder): ThunkType => async (dispatch) => 
 
 }
 
-export const createOrder = (orderedBy: string,reservedTable:number, orderedItems: IOrderedProduct[]): ThunkType => async (dispatch) => {
+export const createOrder = (orderedBy: string,reservedTable:number, orderedItems: IOrderedProduct[],cid:string): ThunkType => async (dispatch) => {
     try {
         dispatch(orderActions.setLoading(true))
-        let data = await  OrderService.create(orderedBy,reservedTable,orderedItems)
+        let data = await  OrderService.create(orderedBy,reservedTable,orderedItems,cid)
         dispatch(orderActions.setTrackingOrderData(data.order))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown order error'
@@ -117,12 +124,33 @@ export const editStatus = (orderId:string,status:string): ThunkType => async (di
     }
 
 }
-export const chargePoints = (cid:string,amount:number): ThunkType => async (dispatch) => {
+
+export const completeOrder = (orderId:string): ThunkType => async (dispatch) => {
+    try {
+        dispatch(orderActions.setLoading(true))
+        await  OrderService.completeOrder(orderId)
+        const data = await OrderService.getActiveOrders()
+        dispatch(orderActions.setOrdersData(data.orders))
+    } catch (e: any) {
+        const msg = e.response?.data?.message || 'Unknown order error'
+        dispatch(orderActions.setError(msg))
+    }finally {
+        dispatch(orderActions.setLoading(false))
+    }
+
+}
+export const chargePoints = (cid:string,amount:number,isCustomer:boolean): ThunkType => async (dispatch) => {
     try {
         dispatch(orderActions.setLoading(true))
         await  OrderService.chargePoints(cid,amount)
-        const meData = await AuthService.me()
-        dispatch(authActions.setAuthUserData(meData.user,true))
+        if(isCustomer){
+            const cData = await OrderService.getUser(cid)
+            dispatch(orderActions.setCustomer(cData.user))
+        }else{
+            const meData = await AuthService.me()
+            dispatch(authActions.setAuthUserData(meData.user,true))
+        }
+
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown order error'
         dispatch(orderActions.setError(msg))
@@ -144,7 +172,19 @@ export const getOrder = (orderId:string): ThunkType => async (dispatch) => {
     }
 
 }
+export const getUser = (cid:string): ThunkType => async (dispatch) => {
+    try {
+        dispatch(orderActions.setLoading(true))
+        let data = await  OrderService.getUser(cid)
+        dispatch(orderActions.setCustomer(data.user))
+    } catch (e: any) {
+        const msg = e.response?.data?.message || 'Unknown order error'
+        dispatch(orderActions.setError(msg))
+    }finally {
+        dispatch(orderActions.setLoading(false))
+    }
 
+}
 export const getActiveOrders = (): ThunkType => async (dispatch) => {
     try {
         dispatch(orderActions.setLoading(true))

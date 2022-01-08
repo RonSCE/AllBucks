@@ -52,6 +52,14 @@
   margin: 5px 2px 2px 5px;
   flex-grow: 1;
 }
+.order-item{
+  width: 240px;
+  padding: 5px;
+  display: inline-block;
+  border :2px solid grey ;
+  margin: 5px 2px 2px 5px;
+  flex-grow: 1;
+}
 .add-prod-bnt{
 position: fixed;
   top: 70%;
@@ -115,4 +123,33 @@ position: fixed;
 }
 .search{
   margin: auto;
+}
+.empty-div{
+  padding: 5px;
+  border: 1px solid #eeeeee;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  text-align: center;
+
+}
+.desc-items{
+  padding: 5px;
+  border: 1px solid #eeeeee;
+  margin-top:10px ;
+  text-align: center;
+}
+
+.big-btn{
+  width:120px;
+}
+.margin-auto{
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+.reserve{
+  color: #ee6e73;
+}
+.release{
+ color: #36c655;
 }

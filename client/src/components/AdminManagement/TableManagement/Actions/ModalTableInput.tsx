@@ -13,13 +13,13 @@ interface InputProps{
 const ModalTableInput:FC<InputProps> = ({table,isLoading,setVisible,visible,onOk,setTable}) => {
     const [isAvailable,setAvailable] = useState( false)
     const [isInside,setInside] = useState(false)
-    const [tableNum,setTableNum] = useState(0)
-    const [capacity,setCapacity] = useState(0)
+    const [tableNum,setTableNum] = useState(1)
+    const [capacity,setCapacity] = useState(1)
     useEffect(()=>{
         setAvailable(table?.isAvailable || false)
         setInside(table?.isInside || false)
-        setTableNum(table?.tableNum || 0)
-        setCapacity(table?.capacity || 0)
+        setTableNum(table?.tableNum || 1)
+        setCapacity(table?.capacity || 1)
     },[table])
     const setTableLocally = ()=>{
         if(table){
@@ -48,8 +48,8 @@ const ModalTableInput:FC<InputProps> = ({table,isLoading,setVisible,visible,onOk
     const  clearInput= () => {
         setAvailable( true)
         setInside(false)
-        setTableNum( 0)
-        setCapacity(0)
+        setTableNum( 1)
+        setCapacity(1)
     }
     return (
         <Modal
@@ -62,8 +62,8 @@ const ModalTableInput:FC<InputProps> = ({table,isLoading,setVisible,visible,onOk
         >
 
 
-            <b>Table Number: </b><br/><InputNumber disabled={!!table} value={tableNum} step={1} min={1} onChange={(e)=>{ setTableNum(e)}} />
-            <br/><b>Capacity: </b><br/><InputNumber value={capacity } min={1} max={1000} onChange={(e)=>{setCapacity(e)  }} />
+            <b>Table Number: </b><br/><InputNumber required={true} disabled={!!table} value={tableNum} step={1} min={1} onChange={(e)=>{ setTableNum(e)}} />
+            <br/><b>Capacity: </b><br/><InputNumber required={true} value={capacity } min={1} max={1000} onChange={(e)=>{setCapacity(e)  }} />
             <br/><b>Is Available :</b><Switch checked={isAvailable} onChange={(e)=>{setAvailable(e)}} />
             <br/><b>Is Inside:</b><Switch checked={isInside} onChange={(e)=>{setInside(e)}} />
         </Modal>);

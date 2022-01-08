@@ -10,6 +10,10 @@ const OrderSchema = new mongoose.Schema(
             type:String,
             default: "Guest"
         },
+        cid: {
+            type:String,
+            default: "Guest"
+        },
         reservedTable: {
             type:Number
         },

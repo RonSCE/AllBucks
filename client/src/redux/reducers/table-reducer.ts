@@ -70,6 +70,8 @@ export const reserveTable = (tableNum:number): ThunkType => async (dispatch) => 
     try {
         dispatch(tableActions.setLoading(true))
         await TableService.reserveTable(tableNum)
+        const data = await TableService.getAllTables()
+        dispatch(tableActions.setTablesData(data.tables))
     } catch (e: any) {
         console.log(e);
         const msg = e.response?.data?.message || 'Reserve table error'
@@ -83,6 +85,8 @@ export const releaseTable = (tableNum:number): ThunkType => async (dispatch) => 
     try {
         dispatch(tableActions.setLoading(true))
         await TableService.releaseTable(tableNum)
+        const data = await TableService.getAllTables()
+        dispatch(tableActions.setTablesData(data.tables))
     } catch (e: any) {
         console.log(e);
         const msg = e.response?.data?.message || 'Release table error'

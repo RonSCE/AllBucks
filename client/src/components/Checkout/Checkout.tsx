@@ -4,22 +4,13 @@ import {AppStateType} from "../../redux/Store";
 import {IOrder, ITable, IUser} from "../../types/types";
 import {Redirect} from "react-router-dom";
 import Card from 'react-credit-card-flipping';
-import {
-    Button,
-    Descriptions, Input,
-    InputNumber,
-    List,
-    message,
-    notification,
-    Popconfirm,
-    Steps,
-    Tooltip
-} from "antd";
+import {Button, Descriptions, Input, InputNumber, List, message, notification, Popconfirm, Steps, Tooltip} from "antd";
 import {getAllTables, tableActions} from "../../redux/reducers/table-reducer";
 import TableService from "../../api/table-api";
 import {calcDiscount, calcFinalPrice, calcRegularPrice} from "../Cart/Cart";
 import {QuestionCircleOutlined} from "@ant-design/icons";
 import {chargePoints, createOrder, loadLocalOrder} from "../../redux/reducers/order-reducer";
+
 const { Step } = Steps;
 
 
@@ -36,7 +27,8 @@ const Checkout:FC = () => {
     const order = useSelector<AppStateType>(state=>state.order.currentOrder) as IOrder
     const finalPrice = calcFinalPrice(order.orderedItems)
     const user = useSelector<AppStateType>(state=>state.auth.user) as IUser
-    const isMember = user?.type === "Member"
+    const customer = useSelector<AppStateType>(state=>state.order.currentCustomer) as IUser
+    const isMember = user && user.type === "Member"
     const selected = useSelector<AppStateType>(state => state.table.selected) as number
     useEffect(()=>{
         dispatch(getAllTables())
@@ -72,6 +64,7 @@ const Checkout:FC = () => {
     }
     const [takeAway,setTakeAway] = useState(false)
     const [spentPoints,setSpentPoints] = useState(0)
+    const [payedWithCash,setPayedWithCash]= useState(0)
     const tables = useSelector<AppStateType>(state => state.table.tables) as ITable []
     const steps = [
         {
@@ -79,12 +72,12 @@ const Checkout:FC = () => {
             content:<div>
                 <h2 style={{textAlign:"center"}}>Sit in or Take Away?</h2>
                 <br/>
-                <div >
-                    <Button type="primary" shape="round" size={"large"}  style={{width:100,marginLeft:200}} danger={takeAway}
+                <div className={"margin-auto"}>
+                    <Button className={"big-btn"} type="primary" shape="round" size={"large"}   danger={takeAway}
                             onClick={()=>{setTakeAway(true);setStep(2);} }>
                         Take Away
                     </Button>
-                    <Button type="primary" shape="round"  size={"large"}  style={{width:100,marginLeft:50}} danger={!takeAway}
+                    <Button className={"big-btn"} type="primary" shape="round"  size={"large"}  style={{marginLeft:50}} danger={!takeAway}
                             onClick={()=>{setTakeAway(false);setStep(1);}}>
                         Sit in
                     </Button>
@@ -144,7 +137,7 @@ const Checkout:FC = () => {
                                        label="Discount">{calcDiscount(order.orderedItems)}₪</Descriptions.Item>
                     <Descriptions.Item style={{border:"1px solid grey"}} label="Final Amount"><b>{finalPrice}₪</b></Descriptions.Item>
                 </Descriptions>
-                {isMember && user.points?
+                { isMember && user.points &&
                     <>
 
                         <Tooltip placement="topRight" title="1 point = 1₪">
@@ -159,10 +152,33 @@ const Checkout:FC = () => {
                            </Tooltip>
                         </div>
                         </>
-                :
-                    null
                 }
-                {finalPrice-spentPoints !== 0 &&
+                { user && user.type==="Barista" && customer && customer.points && customer.points > 0 &&
+                    <>
+
+                <Tooltip placement="topRight" title="1 point = 1₪">
+                    <b>Member Points: {user.points || 0}</b> <QuestionCircleOutlined />
+                    </Tooltip>
+                    <div>
+                    <b> Pay with Member Points: </b>
+                    <InputNumber value={spentPoints} onChange={(e)=>setSpentPoints(e)}
+                    min={0} max={Math.min(customer.points ,finalPrice-payedWithCash)}/>
+                    <Tooltip placement="topRight" title="If set to 0, no points will be charged">
+                    <QuestionCircleOutlined />
+                    </Tooltip>
+                    </div>
+                    </>
+                }
+                {user?.type === "Barista" &&
+                <>
+                    <div style={{marginTop:10}}>
+                        <b> Pay with CASH : </b>
+                        <InputNumber value={payedWithCash} onChange={(e)=>setPayedWithCash(e)}
+                                     min={0} max={finalPrice-spentPoints}/>
+                    </div>
+                </>
+                }
+                {finalPrice-spentPoints-payedWithCash !== 0 &&
                 <div className={"credit-card"}>
                     <div className={'ccard-item'}>
                         <Card
@@ -226,7 +242,6 @@ const Checkout:FC = () => {
                             />
                         </form>
                     </div>
-
                 </div>}
             </>,
         },
@@ -234,11 +249,32 @@ const Checkout:FC = () => {
     const [current, setCurrent] = useState(0);
     const [step, setStep] = useState(1);
     const onPay = ()=> {
-        if(finalPrice-spentPoints===0 || regNumber.test(cardNumber) && regNumber3.test(cardCVV) && regNumber4.test(cardExpiry) && cardName){
+        if(finalPrice-spentPoints-payedWithCash===0 || regNumber.test(cardNumber) && regNumber3.test(cardCVV) && regNumber4.test(cardExpiry) && cardName){
             if(spentPoints>0){
-                dispatch(chargePoints(user.cid as string,spentPoints))
+                if(isMember){
+                    dispatch(chargePoints(user.cid as string,spentPoints,false))
+                }else if(customer){
+                    dispatch(chargePoints(customer.cid as string,spentPoints,true))
+                }
+
             }
-            dispatch(createOrder(user?.name || "Guest",selected,order.orderedItems))
+            let cid;
+            if(user&& user.type ==="Barista" && customer){
+                cid = customer.cid
+            }else if(isMember){
+                cid = user.cid
+            }else{
+                cid = "Guest"
+            }
+            let customerName;
+            if(user&& user.type ==="Barista" && customer){
+                customerName = customer.name
+            }else if(isMember){
+                customerName = user.name
+            }else{
+                customerName = "Guest"
+            }
+            dispatch(createOrder(customerName as string,selected,order.orderedItems,cid as string))
             localStorage.removeItem("localOrder")
             dispatch(loadLocalOrder(user?.name || "Guest"))
             message.success('Payment Accepted')
@@ -271,9 +307,31 @@ const Checkout:FC = () => {
                     </Button>
                 )}
                 {current === steps.length - 1 && (
-                    <Button type="primary" onClick={onPay}>
-                        Pay
-                    </Button>
+
+
+                    <Popconfirm title={isMember?
+                        <>
+                        <div><b>Total Points Spent:</b>{spentPoints}</div>
+                        <div><b>Total Cash Spent (with credit card):</b>{finalPrice-spentPoints}₪</div>
+                        </>
+                        :user && user.type === "Barista"?
+                        <>
+                        <div><b>Total Points Spent:</b>{spentPoints}</div>
+                        <div><b>Total Cash Spent:</b>{payedWithCash}₪</div>
+                        <div><b>Total Cash Spent (with credit card):</b>{finalPrice-spentPoints-payedWithCash}₪</div>
+                        </>
+                            :
+                            <>
+                                <div><b>Total Cash Spent (with credit card):</b>{finalPrice}₪</div>
+                            </>
+
+                       }
+                                okText="Confirm" cancelText="Cancel"
+                    onConfirm={onPay}>
+                        <Button type="primary" >
+                            Pay
+                        </Button>
+                    </Popconfirm>
                 )}
                 {current > 0 && (
                     <Button style={{ margin: '0 8px' }} onClick={() => prev()}>

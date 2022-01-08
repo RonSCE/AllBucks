@@ -18,7 +18,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
     const [inStock,setStock] = useState(false)
     const [category,setCategory] = useState( "")
     const [productName,setProductName] = useState("")
-    const [price,setPrice] = useState(0)
+    const [price,setPrice] = useState(1)
     const [salePrice,setSalePrice] = useState(0)
     const [desc,setDesc] = useState("")
     const [loadingImg,setLoadingImg]=useState(false)
@@ -63,7 +63,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
         setStock(product?.inStock|| false)
         setCategory(product?.category || "")
         setProductName(product?.productName || "")
-        setPrice(product?.price || 0)
+        setPrice(product?.price || 1)
         setDesc(product?.desc || "")
         setSalePrice(product?.salePrice || 0)
     },[product])
@@ -106,9 +106,9 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
         setStock(false)
         setCategory("")
         setProductName("")
-        setPrice(0)
+        setPrice(1)
         setDesc("")
-        setSalePrice(0)
+        setSalePrice(1)
     }
     return (
        <Modal
@@ -119,8 +119,8 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
                onCancel={()=>{setVisible(false)}}
                okText={"Save"}
        >
-           <b>Category:</b><Input value={category} allowClear onChange={(e)=>{setCategory(e.target.value)  }} />
-           <b>Product Name:</b><Input value={productName} disabled={!!product} allowClear onChange={(e)=>{setProductName(e.target.value)}} />
+           <b>Category:</b><Input required={true} value={category} allowClear onChange={(e)=>{setCategory(e.target.value)  }} />
+           <b>Product Name:</b><Input required={true} value={productName} disabled={!!product} allowClear onChange={(e)=>{setProductName(e.target.value)}} />
            <Upload
                name="pic"
                listType="picture-card"
@@ -134,7 +134,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
            >
                {imgUrl ? <img src={imgUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
            </Upload>
-            <b>Price</b><br/><InputNumber value={price} min={1} max={1000}  onChange={(e)=>{ setPrice(e)}} />
+            <b>Price</b><br/><InputNumber required={true} value={price} min={1} max={1000}  onChange={(e)=>{ setPrice(e)}} />
             <br/><b>Sale Price</b><br/><InputNumber value={salePrice } min={1} max={1000} onChange={(e)=>{setSalePrice(e)  }} />
             <br/><b>Is In Stock:</b><Switch checked={inStock} onChange={(e)=>{setStock(e)}} />
             <br/><b>Is Special:</b><Switch checked={isSpecial} onChange={(e)=>{setSpecial(e)}} />

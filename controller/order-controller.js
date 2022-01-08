@@ -5,8 +5,8 @@ const ApiError = require('../exceptions/api-error');
 class OrdersController {
     async create(req, res, next) {
         try {
-            const {orderedBy,orderedItems,reservedTable} = req.body;
-            const order = await orderService.createOrder(orderedBy,orderedItems,reservedTable)
+            const {orderedBy,orderedItems,reservedTable,cid} = req.body;
+            const order = await orderService.createOrder(orderedBy,orderedItems,reservedTable,cid)
             res.json({order})
         } catch (err) {
             next(err)
@@ -69,6 +69,15 @@ class OrdersController {
             const {amount} = req.body;
             await orderService.chargePoints(cid,amount)
             res.json({resultCode: "Success"})
+        } catch (err) {
+            next(err)
+        }
+    }
+    async getUser(req, res, next) {
+        try {
+            const cid = req.params.id;
+            const user = await orderService.getUser(cid)
+            res.json({user})
         } catch (err) {
             next(err)
         }

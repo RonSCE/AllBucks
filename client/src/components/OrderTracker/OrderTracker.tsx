@@ -1,38 +1,23 @@
-import React, {FC, useEffect, useState} from 'react';
-import {Badge, Button, Card, Descriptions, Input, Layout, message, notification, Row, Tooltip} from "antd";
+import React, {FC, useState} from 'react';
+import {Badge, Button, Card, Descriptions, Input, Layout, message, Row, Tooltip} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../redux/Store";
 import {IOrder} from "../../types/types";
-import { SearchOutlined } from '@ant-design/icons';
-import {getOrder, orderActions} from "../../redux/reducers/order-reducer";
+import {SearchOutlined} from '@ant-design/icons';
+import {getOrder} from "../../redux/reducers/order-reducer";
 
 const OrderTracker:FC = () => {
     const order = useSelector<AppStateType>(state=>state.order.trackingOrder) as IOrder
-    const [orderId,setOrderId] = useState("")
-    const error = useSelector<AppStateType>(state=>state.order.error) as string
+    const [orderId,setOrderId] = useState(order?.orderId || "")
     const dispatch = useDispatch()
     const onSearch = ()=> {
         if(orderId.length === 24){
             dispatch(getOrder(orderId))
         }
-        else if(order && orderId == order.orderId){
-            message.warning("This order is already displayed")
-        }
        else{
            message.error("Order ID length should be 24 symbols!")
         }
     }
-    useEffect(()=>{
-        if(error){
-            notification.error({
-                message: 'Error',
-                description: `Order with ID: ${orderId} is not found`,
-                placement: 'topLeft',
-                duration: 7,
-            });
-            dispatch(orderActions.setError(''))
-        }
-    },[error])
     return (
         <Layout>
             <div className={"search"} style={{marginTop:22}}>
@@ -57,7 +42,13 @@ const OrderTracker:FC = () => {
                     <Badge status="processing" text={order.status}/>
                 </Descriptions.Item>
             </Descriptions>
+                    <div className={"empty-div"}><h1>Ordered Items</h1></div>
+                    {
 
+                        order.orderedItems.map(i=>
+                            <div className={"desc-items"}><b>{i.productName} x {i.quantity}</b></div>
+                        )
+                    }
         </Card>
         :
          <>

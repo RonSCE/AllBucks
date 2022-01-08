@@ -6,7 +6,7 @@ import {Badge, Button, Card, Collapse, Descriptions, InputNumber, Layout, notifi
 import {IOrder, IOrderedProduct} from "../../types/types";
 import {setLocalOrder} from "../../redux/reducers/order-reducer";
 import {DeleteOutlined} from '@ant-design/icons';
-import { useHistory } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
 export const calcRegularPrice = (items: IOrderedProduct[]) => {
     return items.map(i => i.price * i.quantity).reduce((sum, price) => sum + price, 0)
@@ -59,7 +59,7 @@ const Cart: React.FC = () => {
                                 <Badge status="processing" text={currentOrder.status}/>
                             </Descriptions.Item>
                         </Descriptions>
-                        {currentOrder.orderedItems.map(i =>
+                        {currentOrder.orderedItems.length>0 ? currentOrder.orderedItems.map(i =>
                                         <div className={"item-list-cart"} style={{border:"1px solid grey",margin:0}}>
                                             <div className={"item-cart no-border"}><b style={{marginRight: 4}}>Product: </b> {i.productName}</div>
                                             <div className={"item-cart no-border"}><InputNumber className={"cart-input"} defaultValue={i.quantity || 1} min={1} max={1000} onChange={(e) => {
@@ -72,7 +72,9 @@ const Cart: React.FC = () => {
                                                 </Tooltip>
                                             </div>
                                         </div>
-                        )}
+                        ):
+                            <div className={"empty-div"}><h1>Cart is Empty</h1></div>
+                        }
                         <Descriptions
                             title="Summary"
                             bordered
@@ -85,11 +87,9 @@ const Cart: React.FC = () => {
                             <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                         </Descriptions>
                         <Button type="primary" className={"cart-btn"} onClick={onUpdate}>
-                            Update
+                            Save
                         </Button>
-                        <Button type="primary" className={"cart-btn"} onClick={() => setEditMode(false)}>
-                            Cancel
-                        </Button>
+
 
                     </Card>
 
@@ -106,11 +106,11 @@ const Cart: React.FC = () => {
                                 <Badge status="processing" text={currentOrder.status}/>
                             </Descriptions.Item>
                         </Descriptions>
-                        {currentOrder.orderedItems.map(i =>
+                        {currentOrder.orderedItems.length>0 ? currentOrder.orderedItems.map((i) =>
                             <>
                                 <Collapse accordion>
                                     <Collapse.Panel
-                                        header={<><b style={{marginRight: 4}}>Product: </b> {i.productName}</>} key="1">
+                                        header={<><b style={{marginRight: 4}}>Product: </b> {i.productName}</>} key={i.productName}>
                                         <div className={"item-list-cart"}>
                                             <div className={"item-cart"}><b>Quantity: </b>{i.quantity} </div>
                                             <div className={"item-cart"}><b>Regular Price: </b> {i.price}₪</div>
@@ -120,7 +120,10 @@ const Cart: React.FC = () => {
                                     </Collapse.Panel>
                                 </Collapse>
                             </>
-                        )}
+                        ):
+                            <div className={"empty-div"}><h1>Cart is Empty</h1></div>
+
+                        }
                         <Descriptions
                             title="Summary"
                             bordered
@@ -132,10 +135,10 @@ const Cart: React.FC = () => {
                                 label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                             <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                         </Descriptions>
-                        <Button type="primary" className={"cart-btn"} onClick={() => {history.push("/checkout");}}>
+                        <Button disabled={currentOrder.orderedItems.length <1} type="primary" className={"cart-btn"} onClick={() => {history.push("/checkout");}}>
                             Check Out
                         </Button>
-                        <Button type="primary" className={"cart-btn"} onClick={() => setEditMode(true)}>
+                        <Button disabled={currentOrder.orderedItems.length <1} type="primary" className={"cart-btn"} onClick={() => setEditMode(true)}>
                             Edit Cart
                         </Button>
 
