@@ -117,7 +117,6 @@ const Checkout:FC = () => {
                                     description={
                                         <div>
                                             <div><b>Capacity: </b>{table.capacity}</div>
-                                            <div><b>Is Available: </b>{table.isAvailable ? "Yes": "No"}</div>
                                             <div><b>Location: </b>{table.isInside ? "Inside" : 'Outside'}</div>
                                         </div>
                                     }
@@ -157,7 +156,7 @@ const Checkout:FC = () => {
                     <>
 
                 <Tooltip placement="topRight" title="1 point = 1₪">
-                    <b>Member Points: {user.points || 0}</b> <QuestionCircleOutlined />
+                    <b>Member Points: {customer.points}</b> <QuestionCircleOutlined />
                     </Tooltip>
                     <div>
                     <b> Pay with Member Points: </b>
@@ -269,7 +268,10 @@ const Checkout:FC = () => {
             let customerName;
             if(user&& user.type ==="Barista" && customer){
                 customerName = customer.name
-            }else if(isMember){
+            }else if(user&& user.type ==="Barista" && !customer){
+                customerName = "Guest"
+            }
+            else if(isMember){
                 customerName = user.name
             }else{
                 customerName = "Guest"
