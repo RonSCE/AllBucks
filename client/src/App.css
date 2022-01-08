@@ -68,3 +68,51 @@ position: fixed;
   margin-right: 55px;
   position: absolute ;
 }
+.item-list-cart{
+  margin-left: 30px;
+  display: flex;
+  flex-wrap: wrap;
+
+}
+.credit-card{
+  display: flex;
+  flex-wrap: wrap;
+}
+.ccard-item{
+  display: inline-block;
+  flex-grow: 1;
+  width: 250px;
+}
+
+.cc-input{
+  width: 150px;
+  margin: 3px 3px 3px 3px;
+}
+.cc-inputs{
+  margin-top: 70px;
+}
+.item-cart{
+  width: 150px;
+  padding: 5px;
+  text-align: center;
+  display: inline-block;
+  border :2px solid grey ;
+  margin: 3px 3px 3px 3px;
+  flex-grow: 1;
+}
+.no-border{
+  border:none
+}
+.steps{
+  margin: auto;
+  width: 1000px;
+  height: calc(100vh - 200px) ;
+}
+.step{
+  margin: auto;
+  width: 900px;
+  min-height: 400px;
+}
+.search{
+  margin: auto;
+}

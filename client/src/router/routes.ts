@@ -6,6 +6,8 @@ import ProductManagement from "../components/AdminManagement/ProductManagement/P
 import TableManagement from "../components/AdminManagement/TableManagement/TableManagement";
 import ProductList from "../components/HomePage/ProductList";
 import Cart from "../components/Cart/Cart";
+import Checkout from "../components/Checkout/Checkout";
+import OrderTracker from "../components/OrderTracker/OrderTracker";
 
 
 export interface IRoute {
@@ -21,18 +23,25 @@ export enum RouteNames {
     STAFFREG = '/staffregister',
     PRODUCT_MANAGEMENT= '/product-management',
     TABLE_MANAGEMENT = '/table-management',
-    CART = '/cart'
+    CART = '/cart',
+    CHECKOUT = '/checkout',
+    TRACKING = '/tracking'
 }
 
 export const publicRoutes: IRoute[] = [
     {path: RouteNames.LOGIN, exact: true, component: Login},
     {path: RouteNames.REGISTER, exact: true, component: Register},
     {path: RouteNames.CART, exact: true, component: Cart},
+    {path: RouteNames.CHECKOUT, exact: true, component: Checkout},
+    {path: RouteNames.TRACKING, exact: true, component: OrderTracker},
     {path: RouteNames.HOME, exact: true, component: ProductList},
+
 ]
 
 export const memberRoutes: IRoute[] = [
+    {path: RouteNames.CHECKOUT, exact: true, component: Checkout},
     {path: RouteNames.CART, exact: true, component: Cart},
+    {path: RouteNames.TRACKING, exact: true, component: OrderTracker},
     {path: RouteNames.HOME, exact: true, component: ProductList}
 ]
 export const adminRoutes: IRoute[] = [
@@ -42,5 +51,7 @@ export const adminRoutes: IRoute[] = [
     {path: RouteNames.HOME, exact: true, component: ProductManagement}
 ]
 export const baristaRoutes: IRoute[] = [
+    {path: RouteNames.TRACKING, exact: true, component: OrderTracker},
     {path: RouteNames.HOME, exact: true, component: ProductList}
+
 ]

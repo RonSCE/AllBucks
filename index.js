@@ -36,7 +36,7 @@ async function runServer(){
         server.listen(PORT, () => console.log(`Server started on PORT : ${PORT}`))
     }
     catch (e) {
-        console.log(e)
+        console.log("error:"+e)
     }
 }
 runServer();

@@ -10,6 +10,9 @@ const OrderSchema = new mongoose.Schema(
             type:String,
             default: "Guest"
         },
+        reservedTable: {
+            type:Number
+        },
         status: {
             type: String,
             default:"In-Progress"

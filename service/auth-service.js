@@ -48,14 +48,14 @@ class AuthService {
                 userType: type
             })
         await newUser.save()
-        return new UserDto(newUser.cid,newUser.name,newUser.userType)
+        return new UserDto(newUser.cid,newUser.name,newUser.userType,newUser.points)
     }
     async me(userId) {
         const user = await User.findOne({cid:userId});
         if (!user) {
             throw ApiError.BadRequest("User does not exist")
         }
-        return new UserDto(user.cid, user.name,user.userType)
+        return new UserDto(user.cid, user.name,user.userType,user.points)
 
     }
 

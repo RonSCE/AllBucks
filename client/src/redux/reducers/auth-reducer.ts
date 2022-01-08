@@ -44,7 +44,7 @@ export const authActions = {
     } as const),
 }
 
-export const getAuthUserData = (): ThunkType => async (dispatch) => {
+export const getAuthUserData = (): ThunkTypeAuth => async (dispatch) => {
     try {
         if (localStorage.getItem('accessToken')) {
             let meData = await AuthService.me()
@@ -55,7 +55,7 @@ export const getAuthUserData = (): ThunkType => async (dispatch) => {
     }
 }
 
-export const login = (email: string, password: string): ThunkType => async (dispatch) => {
+export const login = (email: string, password: string): ThunkTypeAuth => async (dispatch) => {
     try {
         dispatch(appActions.setLoading(true))
         let data = await AuthService.login(email, password);
@@ -76,13 +76,13 @@ export const login = (email: string, password: string): ThunkType => async (disp
     }
 
 }
-export const logout = ():ThunkType => async (dispatch ) => {
+export const logout = ():ThunkTypeAuth => async (dispatch ) => {
     localStorage.removeItem("accessToken")
     dispatch(authActions.logout())
     localStorage.removeItem("localOrder")
     await dispatch(loadLocalOrder(undefined))
 }
-export const register = (email: string, password: string,name:string): ThunkType => async (dispatch) => {
+export const register = (email: string, password: string,name:string): ThunkTypeAuth => async (dispatch) => {
     try {
         dispatch(appActions.setLoading(true))
         let data = await AuthService.register(email, password,name);
@@ -97,7 +97,7 @@ export const register = (email: string, password: string,name:string): ThunkType
     }
 
 }
-export const staffRegister = (email: string, password: string,name:string,type:string): ThunkType => async (dispatch) => {
+export const staffRegister = (email: string, password: string,name:string,type:string): ThunkTypeAuth => async (dispatch) => {
     try {
         dispatch(appActions.setLoading(true))
         await AuthService.staffRegister(email, password,name,type);
@@ -114,6 +114,6 @@ export const staffRegister = (email: string, password: string,name:string,type:s
 
 export type InitialStateType = typeof initialState
 type ActionsType = InferActionsTypes<typeof authActions | typeof appActions>
-type ThunkType = BaseThunkType<ActionsType>
+type ThunkTypeAuth = BaseThunkType<ActionsType>
 
 export default authReducer;

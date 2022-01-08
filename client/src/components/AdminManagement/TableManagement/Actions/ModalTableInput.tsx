@@ -16,8 +16,8 @@ const ModalTableInput:FC<InputProps> = ({table,isLoading,setVisible,visible,onOk
     const [tableNum,setTableNum] = useState(0)
     const [capacity,setCapacity] = useState(0)
     useEffect(()=>{
-        setAvailable(table?.isAvailable || true)
-        setInside(table?.isInside|| false)
+        setAvailable(table?.isAvailable || false)
+        setInside(table?.isInside || false)
         setTableNum(table?.tableNum || 0)
         setCapacity(table?.capacity || 0)
     },[table])

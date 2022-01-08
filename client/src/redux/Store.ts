@@ -26,5 +26,6 @@ export type AppDispatch = typeof store.dispatch
 
 const composeEnhancers = compose
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
-
+// @ts-ignore
+window.__store__ = store
 export default store

@@ -19,9 +19,9 @@ const UserSchema = new mongoose.Schema(
             type:String,
             default:"Member"
         },
-        numOfCoffeeCups:{
+        points:{
             type:Number,
-            required: false
+            default: 0
         },
     }, {timestamps: true}
 )

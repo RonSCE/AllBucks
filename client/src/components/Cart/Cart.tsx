@@ -2,19 +2,29 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {authActions} from '../../redux/reducers/auth-reducer';
 import {AppStateType} from "../../redux/Store";
-import {Badge, Button, Card, Descriptions, InputNumber, Layout, notification, Row, Tooltip} from "antd";
+import {Badge, Button, Card, Collapse, Descriptions, InputNumber, Layout, notification, Row, Tooltip} from "antd";
 import {IOrder, IOrderedProduct} from "../../types/types";
 import {setLocalOrder} from "../../redux/reducers/order-reducer";
 import {DeleteOutlined} from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
 
-
-const Cart:React.FC = () => {
+export const calcRegularPrice = (items: IOrderedProduct[]) => {
+    return items.map(i => i.price * i.quantity).reduce((sum, price) => sum + price, 0)
+}
+export const calcDiscount = (items: IOrderedProduct[]) => {
+    return calcRegularPrice(items) - calcFinalPrice(items)
+}
+export const calcFinalPrice = (items: IOrderedProduct[]) => {
+    return items.map(i => i.salePrice ? i.salePrice * i.quantity : i.price * i.quantity).reduce((sum, price) => sum + price, 0)
+}
+const Cart: React.FC = () => {
     const error = useSelector<AppStateType>(state => state.auth.error) as string
     const currentOrder = useSelector<AppStateType>(state => state.order.currentOrder) as IOrder
-    const [editMode,setEditMode] = useState(false)
+    const [editMode, setEditMode] = useState(false)
+    const history = useHistory();
     const dispatch = useDispatch()
     const showError = () => {
-        if(error) {
+        if (error) {
             notification.error({
                 message: 'Registration error',
                 description: error,
@@ -24,97 +34,112 @@ const Cart:React.FC = () => {
             dispatch(authActions.setAuthError(''))
         }
     }
-    useEffect(showError,[error])
+    useEffect(showError, [error])
     const onUpdate = () => {
         dispatch(setLocalOrder(currentOrder))
         setEditMode(false)
     }
-    const onDelete = (productName:string) => {
-        currentOrder.orderedItems = currentOrder.orderedItems.filter(i=> i.productName !== productName)
+    const onDelete = (productName: string) => {
+        currentOrder.orderedItems = currentOrder.orderedItems.filter(i => i.productName !== productName)
         dispatch(setLocalOrder({...currentOrder}))
-    }
-    const calcRegularPrice = (items:IOrderedProduct[])=> {
-        return items.map(i => i.price*i.quantity ).reduce((sum, price) => sum + price, 0)
-    }
-    const calcDiscount = (items:IOrderedProduct[])=> {
-        return calcRegularPrice(items) - calcFinalPrice(items)
-    }
-    const calcFinalPrice = (items:IOrderedProduct[])=> {
-        return items.map(i => i.salePrice?i.salePrice*i.quantity:i.price*i.quantity ).reduce((sum, price) => sum + price, 0)
     }
     return (
         <Layout>
             <Row justify="center" align="middle" className="h100">
                 {editMode ?
-                    <Card className="card" >
+                    <Card className="card">
                         <Descriptions
                             title="Cart"
                             bordered
-                            column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
+                            column={{xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
                         >
+                            <Descriptions.Item label="Order ID" span={4}>{currentOrder.orderId}</Descriptions.Item>
                             <Descriptions.Item label="Customer" span={4}>{currentOrder.orderedBy}</Descriptions.Item>
                             <Descriptions.Item label="Status" span={4}>
-                                <Badge status="processing" text={currentOrder.status} />
+                                <Badge status="processing" text={currentOrder.status}/>
                             </Descriptions.Item>
-
-                            {currentOrder.orderedItems.map(i =>
-                                <>
-                                    <Descriptions.Item label={"Product:"}> {i.productName} </Descriptions.Item>
-                                    <Descriptions.Item label={"Quantity:"}>
-                                        <InputNumber className={"cart-input"} defaultValue={i.quantity || 1} min={1} max={1000} onChange={(e)=>{i.quantity = e  }} />
-                                        <Tooltip title="Remove">
-                                            <Button type="primary" onClick={()=>onDelete(i.productName as string)} danger shape="circle" icon={<DeleteOutlined />} />
-                                        </Tooltip>
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label={"Regular Price:"}> {i.price}₪</Descriptions.Item>
-                                    <Descriptions.Item label={"Sale Price:"}> {i.salePrice? i.salePrice + '₪' : "None"}</Descriptions.Item>
-                                </>
-                            )}
-                            <Descriptions.Item label="Amount Before Sale"><b>{calcRegularPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
-                            <Descriptions.Item label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                        </Descriptions>
+                        {currentOrder.orderedItems.map(i =>
+                                        <div className={"item-list-cart"} style={{border:"1px solid grey",margin:0}}>
+                                            <div className={"item-cart no-border"}><b style={{marginRight: 4}}>Product: </b> {i.productName}</div>
+                                            <div className={"item-cart no-border"}><InputNumber className={"cart-input"} defaultValue={i.quantity || 1} min={1} max={1000} onChange={(e) => {
+                                                i.quantity = e
+                                            }}/></div>
+                                            <div className={"item-cart no-border"}>
+                                                <Tooltip title="Remove" style={{float: "right"}}>
+                                                    <Button type="primary" onClick={() => onDelete(i.productName as string)}
+                                                            danger shape="circle" icon={<DeleteOutlined/>}/>
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                        )}
+                        <Descriptions
+                            title="Summary"
+                            bordered
+                            column={{xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
+                        >
+                            <Descriptions.Item
+                                label="Amount Before Sale"><b>{calcRegularPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                            <Descriptions.Item
+                                label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                             <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
                         </Descriptions>
                         <Button type="primary" className={"cart-btn"} onClick={onUpdate}>
                             Update
                         </Button>
-                        <Button type="primary" className={"cart-btn"} onClick={()=>setEditMode(false)}>
+                        <Button type="primary" className={"cart-btn"} onClick={() => setEditMode(false)}>
                             Cancel
                         </Button>
+
                     </Card>
 
-
-                :
-                <Card className="card" >
-                    <Descriptions
-                        title="Cart"
-                        bordered
-                        column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
-                    >
-                        <Descriptions.Item label="Order ID" span={4}>{currentOrder.orderId}</Descriptions.Item>
-                        <Descriptions.Item label="Customer" span={4}>{currentOrder.orderedBy}</Descriptions.Item>
-                        <Descriptions.Item label="Status" span={4}>
-                            <Badge status="processing" text={currentOrder.status} />
-                        </Descriptions.Item>
-
+                    :
+                    <Card className="card">
+                        <Descriptions
+                            title="Cart"
+                            bordered
+                            column={{xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
+                        >
+                            <Descriptions.Item label="Order ID" span={4}>{currentOrder.orderId}</Descriptions.Item>
+                            <Descriptions.Item label="Customer" span={4}>{currentOrder.orderedBy}</Descriptions.Item>
+                            <Descriptions.Item label="Status" span={4}>
+                                <Badge status="processing" text={currentOrder.status}/>
+                            </Descriptions.Item>
+                        </Descriptions>
                         {currentOrder.orderedItems.map(i =>
                             <>
-                            <Descriptions.Item label={"Product:"}> {i.productName} </Descriptions.Item>
-                            <Descriptions.Item label={"Quantity:"}>{i.quantity} </Descriptions.Item>
-                            <Descriptions.Item label={"Regular Price:"}> {i.price}₪</Descriptions.Item>
-                            <Descriptions.Item label={"Sale Price:"}> {i.salePrice? i.salePrice +'₪' : "None"}</Descriptions.Item>
+                                <Collapse accordion>
+                                    <Collapse.Panel
+                                        header={<><b style={{marginRight: 4}}>Product: </b> {i.productName}</>} key="1">
+                                        <div className={"item-list-cart"}>
+                                            <div className={"item-cart"}><b>Quantity: </b>{i.quantity} </div>
+                                            <div className={"item-cart"}><b>Regular Price: </b> {i.price}₪</div>
+                                            <div className={"item-cart"}><b>Sale
+                                                Price: </b>{i.salePrice ? i.salePrice + '₪' : "None"}</div>
+                                        </div>
+                                    </Collapse.Panel>
+                                </Collapse>
                             </>
                         )}
-                        <Descriptions.Item label="Amount Before Sale"><b>{calcRegularPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
-                        <Descriptions.Item label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
-                        <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
-                    </Descriptions>
-                    <Button type="primary" className={"cart-btn"} onClick={()=> {}}>
-                        Check Out
-                    </Button>
-                    <Button type="primary" className={"cart-btn"} onClick={()=>setEditMode(true)}>
-                        Edit Cart
-                    </Button>
-                </Card>}
+                        <Descriptions
+                            title="Summary"
+                            bordered
+                            column={{xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1}}
+                        >
+                            <Descriptions.Item
+                                label="Amount Before Sale"><b>{calcRegularPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                            <Descriptions.Item
+                                label="Discount"><b>{calcDiscount(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                            <Descriptions.Item label="Final Amount"><b>{calcFinalPrice(currentOrder.orderedItems)}₪</b></Descriptions.Item>
+                        </Descriptions>
+                        <Button type="primary" className={"cart-btn"} onClick={() => {history.push("/checkout");}}>
+                            Check Out
+                        </Button>
+                        <Button type="primary" className={"cart-btn"} onClick={() => setEditMode(true)}>
+                            Edit Cart
+                        </Button>
+
+                    </Card>}
 
             </Row>
         </Layout>

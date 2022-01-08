@@ -2,7 +2,7 @@ export interface IUser {
     cid: string | null
     name: string | null
     type: string | null
-    numOfCoffeeCups: number | null
+    points: number | null
 }
 export interface UserType{
     type: "Member" | "Barista" | "Admin"
@@ -21,15 +21,16 @@ export interface IOrderedProduct{
 export interface IOrder {
     orderId:string | "Unplaced"
     orderedBy:string | null
+    reservedTable:number | null
     status: string | null
     orderedItems: IOrderedProduct[]
 
 }
 export interface ITable{
-    tableNum:number | null
-    capacity:number | null
-    isAvailable:boolean | null
-    isInside:boolean | null
+    tableNum:number
+    capacity:number
+    isAvailable:boolean
+    isInside:boolean
 }
 export interface IProduct{
     productName: string | null

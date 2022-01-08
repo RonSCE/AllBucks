@@ -63,7 +63,6 @@ class TableController {
     }
     async release(req, res, next) {
         try {
-            TableController.checkUserType(req,"Barista")
             const tableNum = req.params.tableNum;
             await tableService.release(tableNum)
             res.json({result: "Success"})

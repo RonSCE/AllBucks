@@ -2,25 +2,25 @@ import {BaseThunkType, InferActionsTypes} from '../Store';
 import {ITable} from "../../types/types";
 import TableService from "../../api/table-api";
 let initialState = {
-    currentTable: null as (ITable | null),
+    selected: 0,
     tables: null as (ITable[] | null),
     isLoading: false,
     error: '',
 };
 
 export enum TableActions {
-    SET_TABLE_DATA,
     SET_TABLES_DATA,
     SET_ERROR,
-    SET_LOADING
+    SET_LOADING,
+    SET_SELECTED
 }
 
 const tableReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
-        case TableActions.SET_TABLE_DATA:
         case TableActions.SET_TABLES_DATA:
         case TableActions.SET_ERROR:
         case TableActions.SET_LOADING:
+        case TableActions.SET_SELECTED:
             return {
                 ...state,
                 ...action.payload
@@ -31,10 +31,6 @@ const tableReducer = (state: InitialStateType = initialState, action: ActionsTyp
 }
 
 export const tableActions = {
-    setTableData: (table:ITable | null) => ({
-        type: TableActions.SET_TABLE_DATA,
-        payload: {currentTable:table}
-    } as const),
     setTablesData: (tables:ITable[]) => ({
         type: TableActions.SET_TABLES_DATA,
         payload: {tables}
@@ -46,6 +42,10 @@ export const tableActions = {
     setLoading: (isLoading: boolean) => ({
         type: TableActions.SET_LOADING,
         payload: {isLoading}
+    } as const),
+    setSelected: (num: number) => ({
+        type: TableActions.SET_SELECTED,
+        payload: {selected:num}
     } as const)
 }
 
@@ -54,10 +54,9 @@ export const tableActions = {
 export const addTable = (table:ITable): ThunkType => async (dispatch) => {
     try {
         dispatch(tableActions.setLoading(true))
-        let data = await  TableService.addTable(table)
-        let data2 = await TableService.getAllTables()
-        dispatch(tableActions.setTableData(data.table))
-        dispatch(tableActions.setTablesData(data2.tables))
+        await TableService.addTable(table)
+        let data = await TableService.getAllTables()
+        dispatch(tableActions.setTablesData(data.tables))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown table error'
         dispatch(tableActions.setError(msg))
@@ -71,11 +70,9 @@ export const reserveTable = (tableNum:number): ThunkType => async (dispatch) => 
     try {
         dispatch(tableActions.setLoading(true))
         await TableService.reserveTable(tableNum)
-        let table = initialState.currentTable as ITable
-        table.isAvailable = false
-        dispatch(tableActions.setTableData(table))
     } catch (e: any) {
-        const msg = e.response?.data?.message || 'Unknown table error'
+        console.log(e);
+        const msg = e.response?.data?.message || 'Reserve table error'
         dispatch(tableActions.setError(msg))
     }finally {
         dispatch(tableActions.setLoading(false))
@@ -86,24 +83,9 @@ export const releaseTable = (tableNum:number): ThunkType => async (dispatch) => 
     try {
         dispatch(tableActions.setLoading(true))
         await TableService.releaseTable(tableNum)
-        let table = initialState.currentTable as ITable
-        table.isAvailable = true
-        dispatch(tableActions.setTableData(table))
     } catch (e: any) {
-        const msg = e.response?.data?.message || 'Unknown table error'
-        dispatch(tableActions.setError(msg))
-    }finally {
-        dispatch(tableActions.setLoading(false))
-    }
-
-}
-export const getTable = (tableNum:number): ThunkType => async (dispatch) => {
-    try {
-        dispatch(tableActions.setLoading(true))
-        let data = await TableService.getTable(tableNum)
-        dispatch(tableActions.setTableData(data.table))
-    } catch (e: any) {
-        const msg = e.response?.data?.message || 'Unknown table error'
+        console.log(e);
+        const msg = e.response?.data?.message || 'Release table error'
         dispatch(tableActions.setError(msg))
     }finally {
         dispatch(tableActions.setLoading(false))
@@ -126,10 +108,9 @@ export const getAllTables = (): ThunkType => async (dispatch) => {
 export const editTable = (tableNum:number,capacity:number,isAvailable:boolean,isInside:boolean): ThunkType => async (dispatch) => {
     try {
         dispatch(tableActions.setLoading(true))
-        let data = await TableService.editTable(tableNum,capacity,isAvailable,isInside)
-        let data2 = await TableService.getAllTables()
-        dispatch(tableActions.setTableData(data.table))
-        dispatch(tableActions.setTablesData(data2.tables))
+       await TableService.editTable(tableNum,capacity,isAvailable,isInside)
+        let data = await TableService.getAllTables()
+        dispatch(tableActions.setTablesData(data.tables))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown table error'
         dispatch(tableActions.setError(msg))
@@ -143,7 +124,6 @@ export const deleteTable = (tableNum:number): ThunkType => async (dispatch) => {
         dispatch(tableActions.setLoading(true))
         await TableService.deleteTable(tableNum)
         let data = await TableService.getAllTables()
-        dispatch(tableActions.setTableData(null))
         dispatch(tableActions.setTablesData(data.tables))
     } catch (e: any) {
         const msg = e.response?.data?.message || 'Unknown table error'
