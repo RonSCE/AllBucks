@@ -48,16 +48,13 @@ const ProductManagement:FC = () => {
     useEffect(()=>{
         if(!available && allProducts){
             tempProducts = allProducts.filter(p=>p.inStock)
-        }else if(allProducts){
+        }else if(allProducts && available){
             tempProducts = allProducts
         }else{
             tempProducts = []
         }
         if(allProducts && selected !=="All"){
-            tempProducts =allProducts.filter(p=> p.category === selected)
-            if(!available){
-                tempProducts = tempProducts.filter(p=>p.inStock)
-            }
+            tempProducts =tempProducts.filter(p=> p.category === selected)
         }
         if(tempProducts.length >0 && sale){
             tempProducts = tempProducts.filter(p=> p.salePrice && p.salePrice > 0)
@@ -74,7 +71,7 @@ const ProductManagement:FC = () => {
             tempProducts = [...tempProducts.sort((p1,p2)=> p2.price - p1.price)]
         }
         setProducts(tempProducts)
-    },[selected,sortOrder,allProducts,sale,special,range])
+    },[selected,sortOrder,allProducts,sale,special,range,available])
     return (
         <>
             <MyMenu setSelected={setSelected} selected={selected} products={allProducts} range={range} sale={sale}
