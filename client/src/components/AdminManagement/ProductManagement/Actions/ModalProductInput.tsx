@@ -73,7 +73,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
                 product.productName = productName
             if(price)
                 product.price = price
-            if(salePrice)
+            if(typeof salePrice === "number")
                 product.salePrice = salePrice
             if(desc)
                 product.desc = desc
@@ -108,7 +108,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
         setProductName("")
         setPrice(1)
         setDesc("")
-        setSalePrice(1)
+        setSalePrice(0)
     }
     return (
        <Modal
@@ -135,7 +135,7 @@ const ModalProductInput:FC<InputProps> = ({product,isLoading,setVisible,visible,
                {imgUrl ? <img src={imgUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
            </Upload>
             <b>Price</b><br/><InputNumber required={true} value={price} min={1} max={1000}  onChange={(e)=>{ setPrice(e)}} />
-            <br/><b>Sale Price</b><br/><InputNumber value={salePrice } min={1} max={1000} onChange={(e)=>{setSalePrice(e)  }} />
+            <br/><b>Sale Price</b><br/><InputNumber value={salePrice } min={0} max={1000} onChange={(e)=>{setSalePrice(e)  }} />
             <br/><b>Is In Stock:</b><Switch checked={inStock} onChange={(e)=>{setStock(e)}} />
             <br/><b>Is Special:</b><Switch checked={isSpecial} onChange={(e)=>{setSpecial(e)}} />
             <br/><b>Description</b><TextArea value={desc} maxLength={200} onChange={(e)=>{setDesc(e.target.value) }} />

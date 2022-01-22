@@ -28,7 +28,7 @@ class ProductService {
         if(desc){
             product.desc = desc
         }
-        if(salePrice){
+        if(typeof salePrice === "number"){
             product.salePrice = salePrice
         }
         if(category){
